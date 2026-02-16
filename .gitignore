@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Uploads (temporary files)
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output
+.next/
+dist/
+build/
+*.egg-info/
+
+# Alembic
+alembic/versions/__pycache__/
+
+# Claude
+CLAUDE.md
+
+# Misc
+*.log
+*.pid
