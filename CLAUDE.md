@@ -441,3 +441,6 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 - No authentication in Phase 1 (anyone can upload)
 - Admin adds rubrics manually via CLI script
 - Production deployment considerations deferred to Phase 5
+
+
+*When telling me to run commands,  split them up so I know which commands are the same line and which are not*

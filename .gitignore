@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
-venv/
-__pycache__/
+**/venv/
+**/__pycache__/
 *.pyc
 
 # Environment variables
