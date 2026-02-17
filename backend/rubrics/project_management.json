@@ -1,0 +1,101 @@
+{
+  "event": "Project Management",
+  "total_points": 100,
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "max_points": 10,
+      "description": "Clear overview of the project including objectives, scope, and outcomes",
+      "scoring_guide": {
+        "9-10": "Exceptional summary with all key elements clearly articulated",
+        "7-8": "Strong summary with most key elements present",
+        "5-6": "Adequate summary but missing some important details",
+        "3-4": "Weak summary with significant gaps",
+        "0-2": "Poor or missing executive summary"
+      }
+    },
+    {
+      "name": "Project Scope & Objectives",
+      "max_points": 15,
+      "description": "Well-defined project boundaries, deliverables, and SMART objectives",
+      "scoring_guide": {
+        "13-15": "Comprehensive scope definition with clear, measurable objectives",
+        "10-12": "Good scope and objectives with minor gaps",
+        "7-9": "Basic scope definition, objectives need refinement",
+        "4-6": "Vague scope or poorly defined objectives",
+        "0-3": "Unclear or missing scope and objectives"
+      }
+    },
+    {
+      "name": "Timeline & Milestones",
+      "max_points": 15,
+      "description": "Detailed project timeline with clear milestones, dependencies, and deadlines",
+      "scoring_guide": {
+        "13-15": "Comprehensive timeline with realistic milestones, dependencies mapped, and contingency built in",
+        "10-12": "Good timeline with most milestones identified and reasonable deadlines",
+        "7-9": "Basic timeline present but lacking detail or milestone clarity",
+        "4-6": "Incomplete timeline with vague or missing milestones",
+        "0-3": "No meaningful timeline or milestones provided"
+      }
+    },
+    {
+      "name": "Resource Allocation",
+      "max_points": 15,
+      "description": "Clear identification and allocation of human, financial, and material resources",
+      "scoring_guide": {
+        "13-15": "Thorough resource plan with roles, responsibilities, and resource optimization strategies",
+        "10-12": "Good resource allocation with most roles and resources identified",
+        "7-9": "Basic resource identification but lacking detailed allocation plan",
+        "4-6": "Incomplete resource planning with significant gaps",
+        "0-3": "No meaningful resource allocation provided"
+      }
+    },
+    {
+      "name": "Risk Management",
+      "max_points": 15,
+      "description": "Identification of potential risks, impact assessment, and mitigation strategies",
+      "scoring_guide": {
+        "13-15": "Comprehensive risk register with probability/impact analysis and detailed mitigation plans",
+        "10-12": "Good risk identification with reasonable mitigation strategies",
+        "7-9": "Some risks identified but mitigation strategies are underdeveloped",
+        "4-6": "Minimal risk identification with weak or missing mitigation plans",
+        "0-3": "No meaningful risk management provided"
+      }
+    },
+    {
+      "name": "Budget & Cost Analysis",
+      "max_points": 15,
+      "description": "Detailed budget breakdown, cost estimates, and financial justification",
+      "scoring_guide": {
+        "13-15": "Detailed budget with line items, cost justification, and variance analysis",
+        "10-12": "Good budget with most costs identified and reasonable estimates",
+        "7-9": "Basic budget present but lacking detail or justification",
+        "4-6": "Incomplete budget with significant gaps in cost analysis",
+        "0-3": "No meaningful budget or cost analysis provided"
+      }
+    },
+    {
+      "name": "Stakeholder Communication Plan",
+      "max_points": 10,
+      "description": "Strategy for keeping stakeholders informed, communication channels, and reporting frequency",
+      "scoring_guide": {
+        "9-10": "Comprehensive communication plan with stakeholder mapping, channels, and cadence defined",
+        "7-8": "Good communication strategy with most stakeholders and channels addressed",
+        "5-6": "Basic communication plan but lacking stakeholder analysis or channel strategy",
+        "3-4": "Minimal communication planning with significant gaps",
+        "0-2": "No meaningful communication plan provided"
+      }
+    },
+    {
+      "name": "Quality Metrics",
+      "max_points": 5,
+      "description": "Defined quality standards, KPIs, and measurement methods for project success",
+      "scoring_guide": {
+        "5": "Clear, measurable quality metrics with defined thresholds and tracking methods",
+        "3-4": "Some quality metrics defined but could be more specific or measurable",
+        "1-2": "Vague quality goals without measurable criteria",
+        "0": "No quality metrics provided"
+      }
+    }
+  ]
+}
