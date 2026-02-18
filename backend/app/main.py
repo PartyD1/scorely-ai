@@ -22,11 +22,9 @@ logger = logging.getLogger(__name__)
 
 
 def _seed_rubrics() -> None:
-    """Seed rubrics from JSON files if the rubrics table is empty."""
+    """Seed any rubric JSON files that are not yet in the database."""
     db = SessionLocal()
     try:
-        if rubric_service.list_events(db):
-            return
         rubrics_dir = Path(__file__).resolve().parent.parent / "rubrics"
         if not rubrics_dir.exists():
             return
@@ -34,7 +32,7 @@ def _seed_rubrics() -> None:
             with open(json_file) as f:
                 data = json.load(f)
             event_name = data.get("event")
-            if event_name:
+            if event_name and not rubric_service.get_rubric_by_event(db, event_name):
                 rubric_service.create_rubric(db, event_name, data)
                 logger.info("Auto-seeded rubric: %s", event_name)
     finally:
