@@ -11,7 +11,8 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id = Column(String, primary_key=True)
-    event_name = Column(String, nullable=False)
+    event_name = Column(String, nullable=False)   # cluster name, e.g. "Project Management"
+    event_code = Column(String, nullable=True)    # specific event code, e.g. "PMBS"
     file_path = Column(String, nullable=False)
     status = Column(
         Enum("pending", "processing", "complete", "failed", name="job_status"),

@@ -1,8 +1,8 @@
-import { JobStatus, UploadResponse } from "@/types/grading";
+import { ClusterEvents, JobStatus, UploadResponse } from "@/types/grading";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export async function getEvents(): Promise<string[]> {
+export async function getEvents(): Promise<ClusterEvents[]> {
   const res = await fetch(`${API_URL}/api/events`);
   if (!res.ok) throw new Error("Failed to fetch events");
   return res.json();
@@ -10,11 +10,11 @@ export async function getEvents(): Promise<string[]> {
 
 export async function uploadPdf(
   file: File,
-  eventName: string
+  eventCode: string
 ): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("event_name", eventName);
+  formData.append("event_code", eventCode);
 
   const res = await fetch(`${API_URL}/api/upload`, {
     method: "POST",

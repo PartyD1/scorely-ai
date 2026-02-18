@@ -1,3 +1,15 @@
+export interface EventInfo {
+  code: string;
+  name: string;
+  description: string;
+}
+
+export interface ClusterEvents {
+  cluster_name: string;
+  display_label: string;
+  events: EventInfo[];
+}
+
 export interface SectionScore {
   name: string;
   max_points: number;
