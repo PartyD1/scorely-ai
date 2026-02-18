@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getEvents, uploadPdf } from "@/lib/api";
-import { ClusterEvents, EventInfo } from "@/types/grading";
+import { ClusterEvents } from "@/types/grading";
 
 const MAX_FILE_SIZE_MB = 15;
 
@@ -11,7 +11,6 @@ export default function UploadForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [clusters, setClusters] = useState<ClusterEvents[]>([]);
-  const [selectedCluster, setSelectedCluster] = useState("");
   const [selectedEventCode, setSelectedEventCode] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -22,18 +21,9 @@ export default function UploadForm() {
     getEvents()
       .then((data) => {
         setClusters(data);
-        if (data.length > 0) {
-          setSelectedCluster(data[0].cluster_name);
-        }
       })
       .catch(() => setError("Failed to load events. Is the backend running?"));
   }, []);
-
-  const currentEvents: EventInfo[] =
-    clusters.find((c) => c.cluster_name === selectedCluster)?.events ?? [];
-
-  const currentClusterLabel =
-    clusters.find((c) => c.cluster_name === selectedCluster)?.display_label ?? "Select a category";
 
   const validateFile = (f: File): string | null => {
     if (!f.name.toLowerCase().endsWith(".pdf")) return "Only PDF files are accepted";
@@ -60,11 +50,6 @@ export default function UploadForm() {
     }
   }, []);
 
-  const handleClusterChange = (clusterName: string) => {
-    setSelectedCluster(clusterName);
-    setSelectedEventCode(""); // reset specific event when cluster changes
-  };
-
   const handleSubmit = async () => {
     if (!file || !selectedEventCode) return;
     setUploading(true);
@@ -80,47 +65,30 @@ export default function UploadForm() {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
-      {/* Cluster selector */}
+      {/* Event selector with optgroup categories */}
       <div>
         <label className="block text-purple-300/80 text-sm mb-2">
-          Event Category
+          Select Event
         </label>
         <select
-          value={selectedCluster}
-          onChange={(e) => handleClusterChange(e.target.value)}
+          value={selectedEventCode}
+          onChange={(e) => setSelectedEventCode(e.target.value)}
           className="w-full bg-[#120020] border border-purple-500/30 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
         >
-          {clusters.length === 0 && (
-            <option value="">Loading events...</option>
-          )}
-          {clusters.map((c) => (
-            <option key={c.cluster_name} value={c.cluster_name}>
-              {c.display_label}
-            </option>
+          <option value="">
+            {clusters.length === 0 ? "Loading events..." : "Select an event..."}
+          </option>
+          {clusters.map((cluster) => (
+            <optgroup key={cluster.cluster_name} label={cluster.display_label}>
+              {cluster.events.map((evt) => (
+                <option key={evt.code} value={evt.code}>
+                  {evt.name} ({evt.code})
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </div>
-
-      {/* Specific event selector */}
-      {selectedCluster && (
-        <div>
-          <label className="block text-purple-300/80 text-sm mb-2">
-            Specific Event
-          </label>
-          <select
-            value={selectedEventCode}
-            onChange={(e) => setSelectedEventCode(e.target.value)}
-            className="w-full bg-[#120020] border border-purple-500/30 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-          >
-            <option value="">Select a specific event...</option>
-            {currentEvents.map((evt) => (
-              <option key={evt.code} value={evt.code}>
-                {evt.name} ({evt.code})
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       {/* Drop zone */}
       <div
