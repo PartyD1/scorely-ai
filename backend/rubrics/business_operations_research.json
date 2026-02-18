@@ -1,0 +1,83 @@
+{
+  "event": "Business Operations Research",
+  "total_points": 60,
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "max_points": 10,
+      "description": "One- to three-page description of the project",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-8": "Meets Expectations",
+        "9-10": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Introduction",
+      "max_points": 9,
+      "description": "Description of the business or organization; description of the target market (demographics and psychographics); overview of the business or organization's current business strategy relating to corporate social responsibility initiatives",
+      "scoring_guide": {
+        "0-3": "Little/No Value (0-1 per item)",
+        "4-6": "Below Expectations (1 per item)",
+        "7-8": "Meets Expectations (2 per item)",
+        "9": "Exceeds Expectations (3 per item)"
+      }
+    },
+    {
+      "name": "Research Methods Used in the Study",
+      "max_points": 8,
+      "description": "Description and rationale of research methodologies selected to conduct the research study; process used to conduct the selected research methods",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4-5": "Meets Expectations",
+        "6-8": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Findings and Conclusions of the Study",
+      "max_points": 8,
+      "description": "Findings of the research study; conclusions based on the findings",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4-5": "Meets Expectations",
+        "6-8": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Proposed Strategic Plan",
+      "max_points": 18,
+      "description": "Objectives and rationale of the proposed strategic plan; proposed activities and timelines; proposed metrics or key performance indicators to measure plan effectiveness",
+      "scoring_guide": {
+        "0-3": "Little/No Value (0-1 per item)",
+        "4-9": "Below Expectations (2-3 per item)",
+        "10-15": "Meets Expectations (4-5 per item)",
+        "16-18": "Exceeds Expectations (6 per item)"
+      }
+    },
+    {
+      "name": "Proposed Budget",
+      "max_points": 4,
+      "description": "Costs associated with proposed strategies",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Appearance and Word Usage",
+      "max_points": 3,
+      "description": "Professional layout, neatness, proper grammar, spelling and word usage",
+      "scoring_guide": {
+        "0": "Little/No Value",
+        "1": "Below Expectations",
+        "2": "Meets Expectations",
+        "3": "Exceeds Expectations"
+      }
+    }
+  ]
+}

@@ -22,6 +22,71 @@ class ClusterInfo(TypedDict):
 
 CLUSTERS: list[ClusterInfo] = [
     {
+        "cluster_name": "Business Operations Research",
+        "display_label": "Business Operations Research Events",
+        "events": [
+            {
+                "code": "BOR",
+                "name": "Business Services",
+                "description": (
+                    "Providing services to businesses on a fee or contract basis or providing "
+                    "services to consumers. Examples may include: human resources companies, "
+                    "information technology companies, legal services firms, training and "
+                    "development organizations, health care service providers, libraries, "
+                    "construction companies, real estate firms, landscaping companies, beauty "
+                    "salons, car washes, automotive repair companies, interior decorating, "
+                    "child care services, photography and tutoring services."
+                ),
+            },
+            {
+                "code": "FOR",
+                "name": "Finance",
+                "description": (
+                    "Providing financial services to commercial and retail customers. Examples "
+                    "may include: banks, credit unions, accounting firms, investment companies "
+                    "and insurance companies."
+                ),
+            },
+            {
+                "code": "HTOR",
+                "name": "Hospitality and Tourism",
+                "description": (
+                    "Providing products and services related to event management, lodging, "
+                    "restaurant management and travel and tourism industries. Examples may "
+                    "include: hotels, lodging services, convention services, food and beverage "
+                    "services, restaurants, museums, amusement parks, zoos and other "
+                    "tourism-related businesses."
+                ),
+            },
+            {
+                "code": "BMOR",
+                "name": "Buying and Merchandising",
+                "description": (
+                    "Getting the product into the hands of the customer through forecasting, "
+                    "planning, buying, displaying, selling and providing customer service. "
+                    "Examples may include any retail or wholesale business that provides "
+                    "consumer goods: specialty stores, department stores, shopping malls, "
+                    "grocery stores, convenience stores, pharmacies, discount stores, "
+                    "farmers markets and car dealerships."
+                ),
+            },
+            {
+                "code": "SEOR",
+                "name": "Sports and Entertainment Marketing",
+                "description": (
+                    "Providing products, services or experiences relating to amateur or "
+                    "professional sports or sporting events, entertainment or entertainment "
+                    "events, selling or renting of supplies and equipment (other than vehicles) "
+                    "used for recreational or sporting purposes or products and services related "
+                    "to hobbies, leisure or cultural events. Examples may include: sports team, "
+                    "movie theaters, waterparks, music venues, concerts, festivals, amateur "
+                    "practice facilities, tournaments, summer camps, outdoor adventure companies "
+                    "and craft/music classes."
+                ),
+            },
+        ],
+    },
+    {
         "cluster_name": "Project Management",
         "display_label": "Project Management Events",
         "events": [
