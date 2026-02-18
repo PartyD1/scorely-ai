@@ -5,6 +5,18 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
+class EventInfo(BaseModel):
+    code: str
+    name: str
+    description: str
+
+
+class ClusterEvents(BaseModel):
+    cluster_name: str
+    display_label: str
+    events: List[EventInfo]
+
+
 class SectionScore(BaseModel):
     name: str
     max_points: int

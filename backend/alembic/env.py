@@ -16,11 +16,10 @@ from app.models import Job, Rubric  # noqa: F401 - import to register models
 
 config = context.config
 
-# Override sqlalchemy.url from environment
-config.set_main_option(
-    "sqlalchemy.url",
-    os.getenv("DATABASE_URL", "postgresql://localhost:5432/rubric_db"),
-)
+# Override sqlalchemy.url from environment, using psycopg v3 driver
+_raw_url = os.getenv("DATABASE_URL", "postgresql://localhost:5432/rubric_db")
+_db_url = _raw_url.replace("postgresql://", "postgresql+psycopg://", 1)
+config.set_main_option("sqlalchemy.url", _db_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

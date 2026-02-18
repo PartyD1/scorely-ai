@@ -3,14 +3,16 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getEvents, uploadPdf } from "@/lib/api";
+import { ClusterEvents, EventInfo } from "@/types/grading";
 
 const MAX_FILE_SIZE_MB = 15;
 
 export default function UploadForm() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [events, setEvents] = useState<string[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState("");
+  const [clusters, setClusters] = useState<ClusterEvents[]>([]);
+  const [selectedCluster, setSelectedCluster] = useState("");
+  const [selectedEventCode, setSelectedEventCode] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -18,12 +20,20 @@ export default function UploadForm() {
 
   useEffect(() => {
     getEvents()
-      .then((evts) => {
-        setEvents(evts);
-        if (evts.length > 0) setSelectedEvent(evts[0]);
+      .then((data) => {
+        setClusters(data);
+        if (data.length > 0) {
+          setSelectedCluster(data[0].cluster_name);
+        }
       })
       .catch(() => setError("Failed to load events. Is the backend running?"));
   }, []);
+
+  const currentEvents: EventInfo[] =
+    clusters.find((c) => c.cluster_name === selectedCluster)?.events ?? [];
+
+  const currentClusterLabel =
+    clusters.find((c) => c.cluster_name === selectedCluster)?.display_label ?? "Select a category";
 
   const validateFile = (f: File): string | null => {
     if (!f.name.toLowerCase().endsWith(".pdf")) return "Only PDF files are accepted";
@@ -50,12 +60,17 @@ export default function UploadForm() {
     }
   }, []);
 
+  const handleClusterChange = (clusterName: string) => {
+    setSelectedCluster(clusterName);
+    setSelectedEventCode(""); // reset specific event when cluster changes
+  };
+
   const handleSubmit = async () => {
-    if (!file || !selectedEvent) return;
+    if (!file || !selectedEventCode) return;
     setUploading(true);
     setError("");
     try {
-      const { job_id } = await uploadPdf(file, selectedEvent);
+      const { job_id } = await uploadPdf(file, selectedEventCode);
       router.push(`/results/${job_id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
@@ -65,24 +80,47 @@ export default function UploadForm() {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
-      {/* Event selector */}
+      {/* Cluster selector */}
       <div>
         <label className="block text-purple-300/80 text-sm mb-2">
-          Select Event
+          Event Category
         </label>
         <select
-          value={selectedEvent}
-          onChange={(e) => setSelectedEvent(e.target.value)}
+          value={selectedCluster}
+          onChange={(e) => handleClusterChange(e.target.value)}
           className="w-full bg-[#120020] border border-purple-500/30 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
         >
-          {events.length === 0 && <option value="">Loading events...</option>}
-          {events.map((evt) => (
-            <option key={evt} value={evt}>
-              {evt}
+          {clusters.length === 0 && (
+            <option value="">Loading events...</option>
+          )}
+          {clusters.map((c) => (
+            <option key={c.cluster_name} value={c.cluster_name}>
+              {c.display_label}
             </option>
           ))}
         </select>
       </div>
+
+      {/* Specific event selector */}
+      {selectedCluster && (
+        <div>
+          <label className="block text-purple-300/80 text-sm mb-2">
+            Specific Event
+          </label>
+          <select
+            value={selectedEventCode}
+            onChange={(e) => setSelectedEventCode(e.target.value)}
+            className="w-full bg-[#120020] border border-purple-500/30 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+          >
+            <option value="">Select a specific event...</option>
+            {currentEvents.map((evt) => (
+              <option key={evt.code} value={evt.code}>
+                {evt.name} ({evt.code})
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Drop zone */}
       <div
@@ -144,7 +182,7 @@ export default function UploadForm() {
       {/* Submit button */}
       <button
         onClick={handleSubmit}
-        disabled={!file || !selectedEvent || uploading}
+        disabled={!file || !selectedEventCode || uploading}
         className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-semibold text-lg hover:from-purple-500 hover:to-fuchsia-500 transition-all duration-200 shadow-lg shadow-purple-600/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
       >
         {uploading ? "Uploading..." : "Grade Report"}

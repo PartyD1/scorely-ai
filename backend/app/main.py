@@ -12,8 +12,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, get_db
+from .events_data import CLUSTERS, get_cluster_for_code
 from .models import Job
-from .schemas import JobResponse, RubricCreate, UploadResponse
+from .schemas import ClusterEvents, EventInfo, JobResponse, RubricCreate, UploadResponse
 from .services import grading_service, pdf_service, rubric_service
 
 logging.basicConfig(level=logging.INFO)
@@ -70,7 +71,7 @@ def run_grading(job_id: str) -> None:
 async def upload_pdf(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    event_name: str = Form(...),
+    event_code: str = Form(...),
     db: Session = Depends(get_db),
 ):
     """Upload a PDF for grading. Returns a job_id to poll for results."""
@@ -79,10 +80,18 @@ async def upload_pdf(
     if error:
         raise HTTPException(status_code=400, detail=error)
 
-    # Check event exists
-    rubric = rubric_service.get_rubric_by_event(db, event_name)
+    # Resolve event code to cluster
+    cluster = get_cluster_for_code(event_code)
+    if not cluster:
+        raise HTTPException(status_code=400, detail=f"Unknown event code: {event_code}")
+
+    # Check rubric exists for the cluster
+    rubric = rubric_service.get_rubric_by_event(db, cluster["cluster_name"])
     if not rubric:
-        raise HTTPException(status_code=400, detail=f"Unknown event: {event_name}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"No rubric configured for: {cluster['cluster_name']}",
+        )
 
     # Save file
     job_id = str(uuid.uuid4())
@@ -98,13 +107,19 @@ async def upload_pdf(
         raise HTTPException(status_code=400, detail=page_error)
 
     # Create job record
-    job = Job(id=job_id, event_name=event_name, file_path=file_path, status="pending")
+    job = Job(
+        id=job_id,
+        event_name=cluster["cluster_name"],
+        event_code=event_code,
+        file_path=file_path,
+        status="pending",
+    )
     db.add(job)
     db.commit()
 
     # Start background grading
     background_tasks.add_task(run_grading, job_id)
-    logger.info("Job %s created for event %s", job_id, event_name)
+    logger.info("Job %s created for event %s (%s)", job_id, cluster["cluster_name"], event_code)
 
     return UploadResponse(job_id=job_id)
 
@@ -119,10 +134,28 @@ def get_job_status(job_id: str, db: Session = Depends(get_db)):
     return JobResponse(status=job.status, result=job.result, error=job.error)
 
 
-@app.get("/api/events")
+@app.get("/api/events", response_model=list[ClusterEvents])
 def list_events(db: Session = Depends(get_db)):
-    """Get list of available event names for dropdown."""
-    return rubric_service.list_events(db)
+    """Get available event clusters and their specific events."""
+    available = set(rubric_service.list_events(db))
+    result = []
+    for cluster in CLUSTERS:
+        if cluster["cluster_name"] in available:
+            result.append(
+                ClusterEvents(
+                    cluster_name=cluster["cluster_name"],
+                    display_label=cluster["display_label"],
+                    events=[
+                        EventInfo(
+                            code=e["code"],
+                            name=e["name"],
+                            description=e["description"],
+                        )
+                        for e in cluster["events"]
+                    ],
+                )
+            )
+    return result
 
 
 @app.post("/api/rubrics")

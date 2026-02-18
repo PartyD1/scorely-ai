@@ -13,13 +13,21 @@ from ..schemas import GradingResult
 from ..utils.file_cleanup import delete_file
 from ..utils.token_counter import truncate_text
 from .pdf_service import extract_text
-from .rubric_service import get_rubric_by_event
+from ..events_data import get_cluster_for_code, get_event_by_code
+from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT_TEMPLATE = """You are an expert DECA judge evaluating a {event_name} report.
+SYSTEM_PROMPT_TEMPLATE = """You are an expert DECA judge evaluating a {cluster_name} report.
 
-You must grade this report using the official rubric provided below. Be strict but fair. Students should earn points through demonstrated competence, not through participation.
+The student submitted for the specific event: {specific_event_name} ({event_code})
+
+EVENT DESCRIPTION — what this project must address:
+{event_description}
+
+A critical part of your evaluation is assessing how clearly and completely the report addresses the specific requirements of this event. Students must demonstrate that their project directly fulfills the event description above, not just a generic project management plan.
+
+You must also grade this report using the official rubric provided below. Be strict but fair. Students should earn points through demonstrated competence, not through participation.
 
 RUBRIC:
 {rubric_json}
@@ -29,7 +37,7 @@ REPORT TEXT:
 
 Grade each section independently. For each section:
 1. Identify what the report does well
-2. Identify what's missing or weak
+2. Identify what's missing or weak, especially relative to the event description above
 3. Assign a score based on the scoring guide
 4. Provide specific, actionable feedback
 
@@ -85,13 +93,31 @@ def grade_report(db: Session, job_id: str) -> None:
         if was_truncated:
             logger.warning("Job %s: text was truncated", job_id)
 
-        # Load rubric
-        rubric = get_rubric_by_event(db, job.event_name)
+        # Resolve event context
+        if job.event_code:
+            event_info = get_event_by_code(job.event_code)
+            cluster_info = get_cluster_for_code(job.event_code)
+            rubric = get_rubric_by_event_code(db, job.event_code)
+            cluster_name = cluster_info["cluster_name"] if cluster_info else job.event_name
+            specific_name = event_info["name"] if event_info else job.event_name
+            event_code = job.event_code
+            event_description = event_info["description"] if event_info else ""
+        else:
+            # Backward compat: old jobs stored cluster name in event_name, no event_code
+            rubric = get_rubric_by_event(db, job.event_name)
+            cluster_name = job.event_name
+            specific_name = job.event_name
+            event_code = job.event_name
+            event_description = ""
+
         if not rubric:
-            raise ValueError(f"No rubric found for event: {job.event_name}")
+            raise ValueError(f"No rubric found for event: {job.event_code or job.event_name}")
 
         # Call LLM
-        result = call_llm(job.event_name, rubric.rubric_data, text)
+        result = call_llm(cluster_name, specific_name, event_code, event_description, rubric.rubric_data, text)
+
+        # Override event_name in LLM output with the specific event display string
+        result["event_name"] = f"{specific_name} ({event_code})" if job.event_code else specific_name
 
         # Validate with Pydantic
         grading_result = GradingResult(**result)
@@ -112,12 +138,22 @@ def grade_report(db: Session, job_id: str) -> None:
         delete_file(job.file_path)
 
 
-def call_llm(event_name: str, rubric_data: dict, extracted_text: str) -> dict:
+def call_llm(
+    cluster_name: str,
+    specific_event_name: str,
+    event_code: str,
+    event_description: str,
+    rubric_data: dict,
+    extracted_text: str,
+) -> dict:
     """Call OpenAI API with structured output."""
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     prompt = SYSTEM_PROMPT_TEMPLATE.format(
-        event_name=event_name,
+        cluster_name=cluster_name,
+        specific_event_name=specific_event_name,
+        event_code=event_code,
+        event_description=event_description,
         rubric_json=json.dumps(rubric_data, indent=2),
         extracted_text=extracted_text,
     )

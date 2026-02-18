@@ -5,9 +5,18 @@ from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
+from ..events_data import get_cluster_for_code
 from ..models import Rubric
 
 logger = logging.getLogger(__name__)
+
+
+def get_rubric_by_event_code(db: Session, event_code: str) -> Optional[Rubric]:
+    """Get a rubric by specific event code, resolving through its cluster."""
+    cluster = get_cluster_for_code(event_code)
+    if not cluster:
+        return None
+    return get_rubric_by_event(db, cluster["cluster_name"])
 
 
 def get_rubric_by_event(db: Session, event_name: str) -> Optional[Rubric]:
