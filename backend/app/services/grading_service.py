@@ -27,10 +27,19 @@ EVENT DESCRIPTION — what this project must address:
 
 A critical part of your evaluation is assessing how clearly and completely the report addresses the specific requirements of this event. Students must demonstrate that their project directly fulfills the event description above, not just a generic project management plan.
 {required_outline_section}
-You must also grade this report using the official rubric provided below. Be strict but fair. Students should earn points through demonstrated competence, not through participation.
+You are evaluating competitive high school DECA entries — compare this report against the standard of a strong, competitive high school submission, not a professional business document. Students who demonstrate clear understanding and competent execution of the required elements should earn scores in the upper tiers. Reserve lower tiers for reports with genuine gaps or missing elements.
 
 RUBRIC:
 {rubric_json}
+
+SCORING CALIBRATION:
+Use these benchmarks to anchor your scores:
+- 90–100%: Exceptional entry. All elements present, clearly executed, and well above peer level.
+- 80–89%: Strong competitive entry. All major elements present with minor gaps. Typical of a state/international qualifier.
+- 70–79%: Solid entry with noticeable gaps in one or two areas.
+- Below 70%: Significant missing elements or weak execution across multiple sections.
+
+Give credit generously for elements that are present and functional, even if not perfectly articulated.
 
 PENALTY CHECKLIST:
 After grading all rubric sections, evaluate each official DECA written entry requirement below.
@@ -59,10 +68,9 @@ REPORT TEXT:
 {extracted_text}
 
 Grade each section independently. For each section:
-1. Identify what the report does well
-2. Identify what's missing or weak, especially relative to the event description above
-3. Assign a score based on the scoring guide
-4. Provide specific, actionable feedback
+1. Identify what the report accomplishes well and give full credit for it
+2. Assign a score based on the scoring guide — when evidence is present, score toward the upper end of the matching tier
+3. Note specific areas for improvement as actionable feedback (not as reasons to dock points retroactively)
 
 Return ONLY valid JSON matching the required schema. Do not add commentary outside the JSON structure."""
 
@@ -225,7 +233,7 @@ def call_llm(
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        temperature=0.2,
+        temperature=0.3,
         messages=[{"role": "user", "content": prompt}],
         response_format={
             "type": "json_schema",
