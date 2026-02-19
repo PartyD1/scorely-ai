@@ -12,7 +12,7 @@ from ..models import Job
 from ..schemas import GradingResult
 from ..utils.file_cleanup import delete_file
 from ..utils.token_counter import truncate_text
-from .pdf_service import extract_text
+from .pdf_service import extract_text, get_page_count
 from ..events_data import get_cluster_for_code, get_event_by_code
 from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
@@ -31,6 +31,32 @@ You must also grade this report using the official rubric provided below. Be str
 
 RUBRIC:
 {rubric_json}
+
+PENALTY CHECKLIST:
+After grading all rubric sections, evaluate each official DECA written entry requirement below.
+For each penalty check, set status to:
+- "flagged"       if you can detect the issue from the extracted text
+- "clear"         if the text confirms the requirement is met
+- "manual_check"  if it cannot be determined from extracted text alone
+
+Penalty checks to evaluate:
+1. Statement of Assurances and Academic Integrity (15-point penalty if missing)
+   Check if the document text includes a Statement of Assurances or Academic Integrity page.
+   Always include a note that the physical/digital signature must be manually verified regardless of status.
+
+2. Page count within 20 pages (5-point penalty per extra page, not counting title page and table of contents)
+   The uploaded PDF has {page_count} total pages. Assuming 1 title page and 1 table of contents page,
+   the graded body is approximately {page_count} - 2 pages. If over 20, flag it and note how many pages over.
+
+3. All pages numbered sequentially (5-point penalty)
+   Based on the text content and structure, does the document appear to follow consistent sequential page numbering
+   from the executive summary through to the end of the appendix?
+
+4. Written entry follows the required outline (5-point penalty)
+   Based on your evaluation above using the required outline, does the document follow the prescribed structure?
+
+5. Typed on 8\u00bd x 11 inch pages with no handwritten content (5-point penalty)
+   Cannot be verified from extracted text. Always set status = "manual_check".
 
 REPORT TEXT:
 {extracted_text}
@@ -64,6 +90,20 @@ GRADING_SCHEMA = {
             },
         },
         "overall_feedback": {"type": "string"},
+        "penalties": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "description": {"type": "string"},
+                    "penalty_points": {"type": "integer"},
+                    "status": {"type": "string", "enum": ["flagged", "clear", "manual_check"]},
+                    "note": {"type": "string"},
+                },
+                "required": ["description", "penalty_points", "status", "note"],
+                "additionalProperties": False,
+            },
+        },
     },
     "required": [
         "event_name",
@@ -71,6 +111,7 @@ GRADING_SCHEMA = {
         "total_awarded",
         "sections",
         "overall_feedback",
+        "penalties",
     ],
     "additionalProperties": False,
 }
@@ -86,6 +127,9 @@ def grade_report(db: Session, job_id: str) -> None:
     try:
         job.status = "processing"
         db.commit()
+
+        # Get page count before extraction (file is deleted in finally)
+        page_count = get_page_count(job.file_path)
 
         # Extract text
         text = extract_text(job.file_path)
@@ -122,7 +166,7 @@ def grade_report(db: Session, job_id: str) -> None:
             required_outline = rubric.rubric_data.get("required_outline")
 
         # Call LLM
-        result = call_llm(cluster_name, specific_name, event_code, event_description, rubric.rubric_data, text, required_outline)
+        result = call_llm(cluster_name, specific_name, event_code, event_description, rubric.rubric_data, text, required_outline, page_count)
 
         # Override event_name in LLM output with the specific event display string
         result["event_name"] = f"{specific_name} ({event_code})" if job.event_code else specific_name
@@ -154,6 +198,7 @@ def call_llm(
     rubric_data: dict,
     extracted_text: str,
     required_outline: dict | None = None,
+    page_count: int = 0,
 ) -> dict:
     """Call OpenAI API with structured output."""
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -177,6 +222,7 @@ def call_llm(
         event_description=event_description,
         required_outline_section=required_outline_section,
         rubric_json=json.dumps(rubric_data, indent=2),
+        page_count=page_count,
         extracted_text=extracted_text,
     )
 

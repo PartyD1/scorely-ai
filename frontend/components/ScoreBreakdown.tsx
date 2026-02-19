@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GradingResult, SectionScore } from "@/types/grading";
+import { GradingResult, PenaltyCheck, SectionScore } from "@/types/grading";
 
 function getScoreColor(pct: number): string {
   if (pct >= 80) return "from-green-500 to-emerald-500";
@@ -54,6 +54,28 @@ function SectionCard({ section }: { section: SectionScore }) {
   );
 }
 
+const PENALTY_BADGE: Record<PenaltyCheck["status"], { label: string; classes: string }> = {
+  flagged: { label: "Action Required", classes: "bg-red-500/10 border-red-500/40 text-red-400" },
+  manual_check: { label: "Verify Manually", classes: "bg-amber-500/10 border-amber-500/40 text-amber-400" },
+  clear: { label: "Clear", classes: "bg-green-500/10 border-green-500/40 text-green-400" },
+};
+
+function PenaltyCard({ penalty }: { penalty: PenaltyCheck }) {
+  const badge = PENALTY_BADGE[penalty.status];
+  return (
+    <div className="bg-[#120020] border border-purple-500/20 rounded-xl p-5">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-white text-sm font-medium leading-snug">{penalty.description}</p>
+        <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border ${badge.classes}`}>
+          {badge.label}
+        </span>
+      </div>
+      <p className="text-purple-200/60 text-xs mt-2 leading-relaxed">{penalty.note}</p>
+      <p className="text-purple-400/40 text-xs mt-1">{penalty.penalty_points} pts at risk</p>
+    </div>
+  );
+}
+
 export default function ScoreBreakdown({ result }: { result: GradingResult }) {
   const overallPct = result.total_possible > 0
     ? (result.total_awarded / result.total_possible) * 100
@@ -98,6 +120,21 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
           <SectionCard key={section.name} section={section} />
         ))}
       </div>
+
+      {/* Penalty checklist */}
+      {result.penalties && result.penalties.length > 0 && (
+        <div className="space-y-3">
+          <div>
+            <h2 className="text-white text-lg font-semibold">DECA Penalty Checklist</h2>
+            <p className="text-purple-300/50 text-xs mt-0.5">
+              These are warnings only — they do not affect your score above. Fix any flagged items before submitting.
+            </p>
+          </div>
+          {result.penalties.map((penalty, i) => (
+            <PenaltyCard key={i} penalty={penalty} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -17,12 +17,20 @@ export interface SectionScore {
   feedback: string;
 }
 
+export interface PenaltyCheck {
+  description: string;
+  penalty_points: number;
+  status: "flagged" | "clear" | "manual_check";
+  note: string;
+}
+
 export interface GradingResult {
   event_name: string;
   total_possible: number;
   total_awarded: number;
   sections: SectionScore[];
   overall_feedback: string;
+  penalties?: PenaltyCheck[];
 }
 
 export interface JobStatus {

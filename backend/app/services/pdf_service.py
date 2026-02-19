@@ -38,6 +38,14 @@ async def save_file(file: UploadFile, job_id: str) -> str:
     return file_path
 
 
+def get_page_count(file_path: str) -> int:
+    """Return the number of pages in a PDF."""
+    doc = fitz.open(file_path)
+    count = len(doc)
+    doc.close()
+    return count
+
+
 def validate_page_count(file_path: str) -> Optional[str]:
     """Check page count after saving. Returns error message or None."""
     try:
