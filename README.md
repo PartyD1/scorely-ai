@@ -1,93 +1,182 @@
 # AI Rubric Evaluator
 
-An AI-powered grading engine that evaluates competitive DECA business reports against structured, event-specific rubrics. Upload a PDF, select an event, and receive deterministic, section-level scoring with actionable feedback — in under 20 seconds.
+An AI-powered grading engine for competitive DECA business reports. Upload a PDF, select an event, and receive deterministic section-level scoring with actionable feedback — in under 20 seconds.
 
-**Current phase: Phase 1 MVP (text-based grading)**
+---
+
+## Overview
+
+DECA competitors submit written reports that judges evaluate against official event rubrics. This tool automates that process: it extracts text from a PDF, loads the event-specific rubric and required document outline, and sends everything to an LLM that scores each section independently and returns structured JSON feedback.
+
+Grading is fully async. Uploading a report returns a job ID immediately; the frontend polls for results and displays them as soon as they're ready.
+
+---
+
+## Features
+
+- **Event-aware grading** — two-level hierarchy (cluster → specific event) with tailored prompts per event
+- **Required outline enforcement** — official DECA document structure injected into the prompt so the LLM penalizes missing sections
+- **Structured output** — JSON schema-validated grading results via OpenAI structured outputs
+- **Section-level feedback** — scores and actionable comments for every rubric section
+- **Token safety** — documents truncated to 25,000 tokens if needed, with a user-visible warning
+- **Auto file cleanup** — uploaded PDFs deleted immediately after grading completes
+- **Rubric management CLI** — add or update event rubrics without touching code
+
+---
+
+## Supported Events
+
+### Project Management
+PMBS · PMCD · PMCA · PMCG · PMFL · PMSP
+
+### Business Operations Research
+BOR · FOR · HTOR · BMOR · SEOR
 
 ---
 
 ## How It Works
 
 ```
-Upload PDF  →  Extract Text  →  Apply Rubric via LLM  →  Structured Score + Feedback
+Upload PDF  →  Extract Text  →  Resolve Rubric + Outline  →  LLM Grading  →  Structured Score + Feedback
 ```
 
-1. **Upload** a DECA report (PDF, up to 25 pages)
-2. **Select** the competitive event (e.g., Project Management)
-3. **Receive** a section-by-section breakdown with scores, feedback, and an overall grade
-
-All grading is async — upload returns a job ID, and results are available via polling within seconds.
+1. User uploads a PDF and selects the event from a two-level dropdown
+2. Backend validates the file (≤ 25 pages, ≤ 15MB, PDF only) and queues a grading job
+3. Text is extracted via PyMuPDF and truncated if needed
+4. The event rubric and official required outline are loaded and injected into the prompt
+5. OpenAI returns a schema-validated JSON response with per-section scores and feedback
+6. Results are stored in the database and the uploaded file is deleted
+7. Frontend displays a section-by-section score breakdown with color-coded progress bars
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 16 (App Router), TypeScript, TailwindCSS |
-| **Backend** | FastAPI (Python), async endpoints |
+|---|---|
+| **Frontend** | Next.js 14+ (App Router), TypeScript, TailwindCSS |
+| **Backend** | FastAPI (Python), async background tasks |
 | **Database** | PostgreSQL, SQLAlchemy ORM, Alembic migrations |
 | **PDF Processing** | PyMuPDF (fitz) |
-| **LLM** | OpenAI API (gpt-4o-mini), temperature 0.2, structured outputs |
+| **LLM** | OpenAI API — gpt-4o-mini, temperature 0.2, structured outputs |
 | **Token Counting** | tiktoken |
 | **Validation** | Pydantic (backend), TypeScript strict mode (frontend) |
 
 ---
 
-## Prerequisites
+## Project Structure
 
-- Python 3.10+
-- Node.js 18+
-- PostgreSQL 16 (via Homebrew: `brew install postgresql@16`)
-- OpenAI API key
+```
+ai-rubric-evaluator/
+├── frontend/
+│   ├── app/
+│   │   ├── page.tsx                  # Landing page
+│   │   ├── upload/page.tsx           # Upload form + event selector
+│   │   └── results/[jobId]/page.tsx  # Polling + results display
+│   ├── components/
+│   │   ├── UploadForm.tsx            # Two-level event dropdown + file upload
+│   │   ├── ScoreBreakdown.tsx        # Section scores with progress bars
+│   │   └── LoadingSpinner.tsx        # Polling state UI
+│   ├── lib/api.ts                    # Centralized API client
+│   └── types/grading.ts              # TypeScript types matching backend schemas
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py                   # FastAPI app, routes, CORS
+│   │   ├── events_data.py            # Static event/cluster hierarchy
+│   │   ├── models.py                 # SQLAlchemy models (Job, Rubric)
+│   │   ├── schemas.py                # Pydantic request/response schemas
+│   │   ├── database.py               # DB connection + session management
+│   │   └── services/
+│   │       ├── grading_service.py    # LLM prompt construction + grading pipeline
+│   │       ├── rubric_service.py     # Rubric CRUD
+│   │       └── pdf_service.py        # PDF extraction + validation
+│   ├── rubrics/
+│   │   ├── project_management.json          # PM rubric + required outline
+│   │   └── business_operations_research.json # BOR rubric + required outline
+│   └── scripts/
+│       └── add_rubric.py             # CLI to seed or create rubrics
+```
 
 ---
 
-## Setup
+## API Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/upload` | Upload PDF + select event; returns `job_id` |
+| `GET` | `/api/status/{job_id}` | Poll job status and retrieve results |
+| `GET` | `/api/events` | List available events for the dropdown |
+| `POST` | `/api/rubrics` | Create or update a rubric |
+| `GET` | `/api/rubrics/{event}` | Fetch a rubric by event name |
+
+---
+
+## Roadmap
+
+| Phase | Status | Description |
+|---|---|---|
+| Phase 1 | ✅ Complete | Text-based grading MVP |
+| Phase 2 | Planned | Visual evaluation (tables, charts, layout analysis) |
+| Phase 3 | Planned | Bulk grading + multi-report comparison |
+| Phase 4 | Planned | Auth + grading history per user |
+| Phase 5 | Planned | Production deployment |
+
+---
+
+## Installation & Setup
+
+### Prerequisites
+
+- Python 3.10+
+- Node.js 18+
+- PostgreSQL 16 (`brew install postgresql@16` on macOS)
+- OpenAI API key
 
 ### Backend
 
-**Step 1:** Navigate to backend and create a virtual environment
+**1. Create and activate a virtual environment**
 ```
 cd backend
 python -m venv venv
 source venv/bin/activate
 ```
 
-**Step 2:** Install dependencies
+**2. Install dependencies**
 ```
 pip install -r requirements.txt
 ```
 
-**Step 3:** Configure environment
+**3. Configure environment**
 ```
 cp .env.example .env
 ```
-Edit `.env` with your values (see Environment Variables section below).
+Edit `.env` with your values:
+```
+DATABASE_URL=postgresql://yourusername@localhost:5432/rubric_db
+OPENAI_API_KEY=sk-...
+UPLOAD_DIR=./uploads
+MAX_FILE_SIZE_MB=15
+MAX_PAGES=25
+```
 
-**Step 4:** Create the database
+**4. Create the database and run migrations**
 ```
 createdb rubric_db
-```
-
-**Step 5:** Run migrations
-```
 alembic upgrade head
 ```
 
-> The default Project Management rubric auto-seeds on first startup — no manual seeding needed.
-
----
+Rubrics auto-seed on first startup — no manual seeding required.
 
 ### Frontend
 
-**Step 1:** Navigate to frontend and install dependencies
+**1. Install dependencies**
 ```
 cd frontend
 npm install
 ```
 
-**Step 2:** Configure environment
+**2. Configure environment**
 ```
 cp .env.example .env.local
 ```
@@ -95,18 +184,18 @@ Set `NEXT_PUBLIC_API_URL=http://localhost:8000` in `.env.local`.
 
 ---
 
-## Running the App
+## Running Locally
 
 Open two terminals:
 
-**Terminal 1 — Backend:**
+**Terminal 1 — Backend**
 ```
 cd backend
 source venv/bin/activate
 uvicorn app.main:app --reload --port 8000
 ```
 
-**Terminal 2 — Frontend:**
+**Terminal 2 — Frontend**
 ```
 cd frontend
 npm run dev
@@ -116,109 +205,45 @@ Open [http://localhost:3001](http://localhost:3001) in your browser.
 
 ---
 
-## Environment Variables
-
-### Backend `.env`
-```
-DATABASE_URL=postgresql://yourusername@localhost:5432/rubric_db
-OPENAI_API_KEY=sk-...
-UPLOAD_DIR=./uploads
-MAX_FILE_SIZE_MB=15
-MAX_PAGES=25
-```
-
-### Frontend `.env.local`
-```
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/upload` | Upload PDF + select event, returns `job_id` |
-| `GET` | `/api/status/{job_id}` | Poll grading job status and results |
-| `GET` | `/api/events` | List available events for the dropdown |
-| `POST` | `/api/rubrics` | Create or update a rubric |
-| `GET` | `/api/rubrics/{event}` | Fetch a rubric by event name |
-
----
-
 ## Adding New Rubrics
 
-**Step 1:** Activate the backend virtualenv
 ```
 cd backend
 source venv/bin/activate
-```
-
-**Step 2:** Run the interactive CLI
-```
 python scripts/add_rubric.py
 ```
 
-The script prompts for event name, sections, point values, and scoring guides, then saves to the database.
+The CLI prompts for event name, sections, point values, scoring guides, and an optional required outline. To seed directly from a JSON file:
+
+```
+python scripts/add_rubric.py --seed rubrics/your_event.json
+```
 
 ---
 
-## File Constraints
-
-- **Max size:** 15MB
-- **Max pages:** 25
-- **Type:** PDF only
-- **Cleanup:** Files are automatically deleted after grading completes and results are stored
-
----
-
-## Known Issues / Troubleshooting
+## Troubleshooting
 
 **`proxies` error on upload**
-Caused by `openai==1.51.0` with `httpx>=0.28`. Fix:
+Caused by `openai==1.51.0` with `httpx>=0.28`:
 ```
 pip install "openai>=1.57.0"
 ```
 
-**Port 3001 already in use**
-Change the port by editing the `dev` script in `frontend/package.json` and updating `backend/app/main.py` CORS origins to match.
+**psycopg architecture mismatch on Apple Silicon**
+```
+pip install --force-reinstall --no-cache-dir "psycopg[binary]"
+```
 
-**Lock file / stale build error**
+**Port 3001 already in use**
+Edit the `dev` script in `frontend/package.json` and update the CORS origins in `backend/app/main.py` to match.
+
+**Stale build errors**
 ```
 rm -rf frontend/.next
 ```
-Then restart the frontend dev server.
-
----
-
-## Project Structure
-
-```
-ai-rubric-evaluator/
-├── frontend/          # Next.js application
-│   ├── app/           # App Router pages (landing, upload, results)
-│   ├── components/    # Reusable UI components
-│   ├── lib/           # API client
-│   └── types/         # Shared TypeScript types
-├── backend/           # FastAPI application
-│   ├── app/           # Core application (routes, models, services)
-│   ├── rubrics/       # Event rubric JSON definitions
-│   ├── scripts/       # CLI utilities (e.g., add_rubric.py)
-│   └── uploads/       # Temporary PDF storage (auto-cleaned)
-```
-
----
-
-## Roadmap
-
-- **Phase 1** ✅ — Text-based grading MVP
-- **Phase 2** — Visual evaluation (tables, charts, layout)
-- **Phase 3** — Multi-rubric support / bulk grading
-- **Phase 4** — Auth + user history
-- **Phase 5** — Production deployment
 
 ---
 
 ## License
 
-This project is private and not licensed for external use.
+Private repository — not licensed for external use.
