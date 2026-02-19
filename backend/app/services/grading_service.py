@@ -45,12 +45,12 @@ Penalty checks to evaluate:
    Always include a note that the physical/digital signature must be manually verified regardless of status.
 
 2. Page count within 20 pages (5-point penalty per extra page)
-   The uploaded PDF has {page_count} total pages. The title page, table of contents, and Statement of
-   Assurances (if present) do not count toward the 20-page limit.
-   - If the Statement of Assurances is present: up to 23 total pages are allowed (20 content + title + TOC + statement).
-     If {page_count} > 23, flag it and note how many pages over the limit.
-   - If the Statement of Assurances is missing: up to 22 total pages are allowed (20 content + title + TOC).
-     If {page_count} > 22, flag it and note how many pages over the limit.
+   The uploaded PDF has {page_count} total pages.
+   Follow these steps exactly:
+   Step 1 — Count excluded pages: title page = 1, table of contents = 1, Statement of Assurances = 1 if present (per check #1 above), else 0.
+   Step 2 — Compute: content_pages = {page_count} - excluded_pages.
+   Step 3 — If content_pages > 20: status = "flagged", note the arithmetic and how many pages over.
+             If content_pages <= 20: status = "clear", note the arithmetic confirming it is within the limit.
 
 3. Written entry follows the required outline (5-point penalty)
    Based on your evaluation above using the required outline, does the document follow the prescribed structure?
