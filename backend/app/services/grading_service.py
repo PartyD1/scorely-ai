@@ -35,10 +35,10 @@ RUBRIC:
 {rubric_json}
 
 SCORING CALIBRATION (expressed as % of total possible points):
-- 90–100%: Near-perfect. The project unmistakably fulfills this specific event's purpose AND demonstrates exceptional mastery across all sections. Reserve this for qualifier-level entries only.
-- 75–85%: Solid competitive entry. The project clearly addresses this event's requirements and demonstrates competent execution. Minor gaps only.
-- 60–72%: Weak — either the project partially matches this event's requirements, or it is the right event type but executed at a surface level without real depth or analysis.
-- 30–40%: The project clearly addresses a fundamentally different type of project than this event requires. Even if well-written, it does not fulfill this event's purpose.
+- 95–100%: Near-perfect. The project unmistakably fulfills this specific event's purpose AND demonstrates exceptional mastery across all sections. Reserve this for qualifier-level entries only.
+- 80–90%: Solid competitive entry. The project clearly addresses this event's requirements and demonstrates competent execution. Minor gaps only.
+- 65–75%: Weak — either the project partially matches this event's requirements, or it is the right event type but executed at a surface level without real depth or analysis.
+- 35–45%: The project clearly addresses a fundamentally different type of project than this event requires. Even if well-written, it does not fulfill this event's purpose.
 
 High scores require both: (1) genuine fulfillment of this specific event's purpose, and (2) demonstrated mastery of the required concepts. Attempting to address something is not the same as mastering it.
 
