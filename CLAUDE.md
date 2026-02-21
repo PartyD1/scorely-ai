@@ -446,3 +446,5 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 *When telling me to run commands,  split them up so I know which commands are the same line and which are not*
 
 *Always feel free to ask me up to 7 clarification questions to dial in the exact idea.*
+
+*ALWAYS work on a branch, open a new branch for each task. NEVER work on the Main Branch*
