@@ -30,6 +30,7 @@ export interface GradingResult {
   total_awarded: number;
   sections: SectionScore[];
   overall_feedback: string;
+  primary_improvement: string;
   penalties?: PenaltyCheck[];
 }
 

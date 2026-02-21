@@ -37,6 +37,7 @@ class GradingResult(BaseModel):
     total_awarded: int
     sections: List[SectionScore]
     overall_feedback: str
+    primary_improvement: str
     penalties: List[PenaltyCheck] = []
 
 

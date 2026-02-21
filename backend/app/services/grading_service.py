@@ -65,6 +65,12 @@ Grade each section independently. For each section:
 2. Assign a score based on both event alignment and quality of execution; a section that doesn't serve this event's purpose scores in the lower tier regardless of writing quality
 3. Provide specific feedback explaining what was and wasn't fulfilled, and why the score was assigned
 
+PRIMARY IMPROVEMENT:
+After grading all sections, identify the single highest-impact change the student could make to improve their score. Name the specific section, describe the specific idea or approach in the report that is weak or missing, and give a precise directive for what to fix or add. One concrete action — not a general summary.
+
+SECTION FEEDBACK REQUIREMENT:
+For each section, feedback must be specific to what this report actually said or did — not generic advice. Reference the specific idea, argument, plan, or approach the student used and explain precisely why it fell short of the scoring guide. Avoid feedback that could apply to any report.
+
 Return ONLY valid JSON matching the required schema. Do not add commentary outside the JSON structure."""
 
 GRADING_SCHEMA = {
@@ -88,6 +94,7 @@ GRADING_SCHEMA = {
             },
         },
         "overall_feedback": {"type": "string"},
+        "primary_improvement": {"type": "string"},
         "penalties": {
             "type": "array",
             "items": {
@@ -109,6 +116,7 @@ GRADING_SCHEMA = {
         "total_awarded",
         "sections",
         "overall_feedback",
+        "primary_improvement",
         "penalties",
     ],
     "additionalProperties": False,

@@ -115,6 +115,18 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
         </div>
       </div>
 
+      {/* Focus Here First — primary improvement */}
+      {result.primary_improvement && (
+        <div className="bg-amber-500/10 border border-amber-500/40 rounded-xl p-5">
+          <h3 className="text-amber-400 font-semibold text-sm uppercase tracking-widest mb-2">
+            Focus Here First
+          </h3>
+          <p className="text-amber-100/80 text-sm leading-relaxed">
+            {result.primary_improvement}
+          </p>
+        </div>
+      )}
+
       {/* Overall feedback */}
       {result.overall_feedback && (
         <div className="bg-[#120020] border border-purple-500/20 rounded-xl p-5">
