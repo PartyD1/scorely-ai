@@ -1,6 +1,6 @@
 import { ClusterEvents, JobStatus, UploadResponse } from "@/types/grading";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = "";
 
 export async function getEvents(): Promise<ClusterEvents[]> {
   const res = await fetch(`${API_URL}/api/events`);
