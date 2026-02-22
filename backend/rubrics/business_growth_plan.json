@@ -1,0 +1,110 @@
+{
+  "event": "Business Growth Plan",
+  "total_points": 60,
+  "required_outline": {
+    "I. Executive Summary": "One- to three-page description of the plan",
+    "II. Introduction": {
+      "A. Type of business": "Type of business owned and operated and description of current business operations",
+      "B. Products and/or Services": "Description of the products and/or services offered",
+      "C. Unique Characteristics": "Unique characteristics of the business"
+    },
+    "III. SWOT Analysis": {
+      "A. Strengths": "Strengths of the business",
+      "B. Weaknesses": "Weaknesses of the business",
+      "C. Opportunities": "Opportunities available for the business",
+      "D. Threats": "Threats to the business"
+    },
+    "IV. Five Year Plan to Grow and Expand the Business": {
+      "A. Expansion Opportunities": "Specific opportunities identified for growth",
+      "B. New Market Analysis": "Analysis of new markets being targeted",
+      "C. Marketing Plan": "Plan to reach new markets"
+    },
+    "V. Financing Plan": {
+      "A. Current Financial Situation": "Current financial situation of the business",
+      "B. Fixed Overhead and Cost of Operations": "Fixed overhead and cost of operations",
+      "C. Capital Needed": "Capital needed for expansion opportunities",
+      "D. Time to Achieve Profitability": "Projected timeline to achieve profitability"
+    },
+    "VI. Conclusion": "Summary of key points",
+    "VII. Proof of Ownership (un-numbered pages)": "Documentation to verify student ownership/operation — does not count toward 20-page limit"
+  },
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "max_points": 10,
+      "description": "One- to three-page description of the plan",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-8": "Meets Expectations",
+        "9-10": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Introduction",
+      "max_points": 9,
+      "description": "Type of business owned and operated, description of products/services offered, and unique characteristics of the business (3 points each)",
+      "scoring_guide": {
+        "0-2": "Little/No Value",
+        "3-5": "Below Expectations",
+        "6-7": "Meets Expectations",
+        "8-9": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "SWOT Analysis",
+      "max_points": 12,
+      "description": "Strengths, weaknesses, opportunities, and threats of the business (3 points each)",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-9": "Meets Expectations",
+        "10-12": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Five Year Plan to Grow and Expand the Business",
+      "max_points": 11,
+      "description": "Expansion opportunities (4 pts), new market analysis (4 pts), and marketing plan (3 pts)",
+      "scoring_guide": {
+        "0-2": "Little/No Value",
+        "3-5": "Below Expectations",
+        "6-8": "Meets Expectations",
+        "9-11": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Financing Plan",
+      "max_points": 12,
+      "description": "Current financial situation, fixed overhead and cost of operations, capital needed for expansion, and time to achieve profitability (3 points each)",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-9": "Meets Expectations",
+        "10-12": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Conclusion",
+      "max_points": 3,
+      "description": "Summary of key points",
+      "scoring_guide": {
+        "0": "Little/No Value",
+        "1": "Below Expectations",
+        "2": "Meets Expectations",
+        "3": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Appearance and Word Usage",
+      "max_points": 3,
+      "description": "Professional layout, neatness, proper grammar, spelling and word usage",
+      "scoring_guide": {
+        "0": "Little/No Value",
+        "1": "Below Expectations",
+        "2": "Meets Expectations",
+        "3": "Exceeds Expectations"
+      }
+    }
+  ]
+}

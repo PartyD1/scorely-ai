@@ -1,0 +1,140 @@
+{
+  "event": "Franchise Business Plan",
+  "total_points": 60,
+  "required_outline": {
+    "I. Executive Summary": "One- to three-page description of the business model",
+    "II. Business History, Background and Objective": "Description of the company, objectives, company successes and challenges, and requirements to franchise",
+    "III. Business Environment": "Description of how environmental factors may affect the business",
+    "IV. Products and/or Services": "List of and descriptions of the products and/or services offered",
+    "V. Present Market": "Description of the present market, growth potential and pricing policy",
+    "VI. Competition": "List of the company's primary competitors in the market and identification of their strengths and weaknesses",
+    "VII. Marketing Plan": "Description of existing and future marketing techniques and strategies",
+    "VIII. Management and Organization": "Description of the management team, management team development plan, succession plan, and the need for additional personnel",
+    "IX. Business Resources": "Major operating equipment, major suppliers, payment terms, outside resources, quality control procedures, availability of skilled labor, training needs, number of full-time and part-time employees, and organizational chart",
+    "X. Financial Plan and Data": "Sales and profit trends, strategy and timing for obtaining capital, two-year projected operating statement, one-year projected cash flow statement",
+    "XI. Conclusion": "Specific request for financing, summary of key points supporting the financial request"
+  },
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "max_points": 10,
+      "description": "One- to three-page description of the business model",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-8": "Meets Expectations",
+        "9-10": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Business History, Background and Objective",
+      "max_points": 5,
+      "description": "Description of the company, objectives, company successes and challenges, and requirements to franchise",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Business Environment",
+      "max_points": 5,
+      "description": "Description of how environmental factors may affect the business",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Products and/or Services",
+      "max_points": 5,
+      "description": "List of and descriptions of the products and/or services offered",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Present Market",
+      "max_points": 5,
+      "description": "Description of the present market, growth potential and pricing policy",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Competition",
+      "max_points": 5,
+      "description": "List of the company's primary competitors in the market and identification of their strengths and weaknesses",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Marketing Plan",
+      "max_points": 5,
+      "description": "Description of existing and future marketing techniques and strategies",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Management and Organization",
+      "max_points": 5,
+      "description": "Description of the management team, development plan, succession plan, and need for additional personnel",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Business Resources",
+      "max_points": 5,
+      "description": "Major operating equipment, suppliers, payment terms, outside resources, quality control, skilled labor availability, training needs, employee counts, and organizational chart",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Financial Plan and Data",
+      "max_points": 5,
+      "description": "Sales and profit trends, capital acquisition strategy and timing, two-year projected operating statement, one-year projected cash flow statement",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Conclusion",
+      "max_points": 5,
+      "description": "Specific request for financing and summary of key points supporting the financial request",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    }
+  ]
+}

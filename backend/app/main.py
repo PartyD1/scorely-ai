@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, get_db
-from .events_data import CLUSTERS, get_cluster_for_code
+from .events_data import CLUSTERS, get_cluster_for_code, get_rubric_name_for_code
 from .models import Job
 from .schemas import ClusterEvents, EventInfo, JobResponse, RubricCreate, UploadResponse
 from .services import grading_service, pdf_service, rubric_service
@@ -83,12 +83,13 @@ async def upload_pdf(
     if not cluster:
         raise HTTPException(status_code=400, detail=f"Unknown event code: {event_code}")
 
-    # Check rubric exists for the cluster
-    rubric = rubric_service.get_rubric_by_event(db, cluster["cluster_name"])
+    # Check rubric exists (event-level rubric_name override takes priority over cluster_name)
+    rubric_name = get_rubric_name_for_code(event_code)
+    rubric = rubric_service.get_rubric_by_event(db, rubric_name)
     if not rubric:
         raise HTTPException(
             status_code=400,
-            detail=f"No rubric configured for: {cluster['cluster_name']}",
+            detail=f"No rubric configured for: {rubric_name}",
         )
 
     # Save file
@@ -132,13 +133,25 @@ def get_job_status(job_id: str, db: Session = Depends(get_db)):
     return JobResponse(status=job.status, result=job.result, error=job.error)
 
 
+def _cluster_is_available(cluster: dict, available: set) -> bool:
+    """Return True if the cluster has at least one rubric available.
+
+    A cluster is available if its cluster_name maps to a rubric in the DB, OR if
+    any event in the cluster has its own rubric_name that exists in the DB (used by
+    clusters like Entrepreneurship where each event has a separate rubric).
+    """
+    if cluster["cluster_name"] in available:
+        return True
+    return any(e.get("rubric_name") in available for e in cluster["events"])
+
+
 @app.get("/api/events", response_model=list[ClusterEvents])
 def list_events(db: Session = Depends(get_db)):
     """Get available event clusters and their specific events."""
     available = set(rubric_service.list_events(db))
     result = []
     for cluster in CLUSTERS:
-        if cluster["cluster_name"] in available:
+        if _cluster_is_available(cluster, available):
             result.append(
                 ClusterEvents(
                     cluster_name=cluster["cluster_name"],

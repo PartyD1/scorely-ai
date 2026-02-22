@@ -3,6 +3,9 @@
 Events are organized into clusters. Each cluster maps to a single rubric in the
 database (by cluster_name). Specific events within a cluster each have a unique
 code and description that defines the prompt students must address.
+
+Events may optionally specify a `rubric_name` to override the cluster-level rubric
+lookup. When present, the system looks up that name in the DB instead of cluster_name.
 """
 
 from typing import Optional, TypedDict
@@ -16,8 +19,10 @@ class _EventInfoRequired(TypedDict):
 
 class EventInfo(_EventInfoRequired, total=False):
     """Event entry. `required_outline` is optional; if absent, falls back to the
-    cluster-level outline stored in the rubric JSON."""
+    cluster-level outline stored in the rubric JSON.
+    `rubric_name` is optional; if set, overrides cluster_name for rubric lookup."""
     required_outline: Optional[dict]
+    rubric_name: str   # overrides cluster_name for rubric lookup when present
 
 
 class ClusterInfo(TypedDict):
@@ -132,6 +137,56 @@ CLUSTERS: list[ClusterInfo] = [
         ],
     },
     {
+        "cluster_name": "Entrepreneurship",
+        "display_label": "Entrepreneurship Events",
+        "events": [
+            {
+                "code": "EBG",
+                "name": "Business Growth Plan",
+                "rubric_name": "Business Growth Plan",
+                "description": (
+                    "Participants analyze an existing business they personally own and operate "
+                    "(a parent's business does not qualify) and develop a written growth strategy. "
+                    "IMPORTANT: This event requires proof of business ownership or operation. "
+                    "The submission may include un-numbered documentation pages (business license, "
+                    "tax filings, notarized affidavit, certificates of insurance, or local permits) "
+                    "that do not count toward the 20-page content limit. If the submitted report "
+                    "contains no credible evidence that the business is real and student-owned, "
+                    "flag this prominently in overall_feedback as a potential disqualifying issue."
+                ),
+            },
+            {
+                "code": "EFB",
+                "name": "Franchise Business Plan",
+                "rubric_name": "Franchise Business Plan",
+                "description": (
+                    "Participants develop a comprehensive business plan proposal to buy into "
+                    "an existing franchise and present it in a role-playing interview."
+                ),
+            },
+            {
+                "code": "EIB",
+                "name": "Independent Business Plan",
+                "rubric_name": "Independent Business Plan",
+                "description": (
+                    "Participants develop a comprehensive proposal to start a new business "
+                    "and request financing in a role-playing interview with a bank or venture "
+                    "capital official. Any type of business may be used."
+                ),
+            },
+            {
+                "code": "IBP",
+                "name": "International Business Plan",
+                "rubric_name": "International Business Plan",
+                "description": (
+                    "Participants develop a proposal to start a new business venture in an "
+                    "international setting. It may be a new business or a new product/service "
+                    "of an existing business. Any type of business may be used."
+                ),
+            },
+        ],
+    },
+    {
         "cluster_name": "Project Management",
         "display_label": "Project Management Events",
         "events": [
@@ -198,3 +253,16 @@ def get_cluster_for_code(code: str) -> Optional[ClusterInfo]:
             if event["code"] == code:
                 return cluster
     return None
+
+
+def get_rubric_name_for_code(code: str) -> Optional[str]:
+    """Get the DB rubric name for an event code.
+
+    Checks event-level rubric_name override first, falls back to cluster_name.
+    Returns None if the event code is not found.
+    """
+    event = get_event_by_code(code)
+    if event and event.get("rubric_name"):
+        return event["rubric_name"]
+    cluster = get_cluster_for_code(code)
+    return cluster["cluster_name"] if cluster else None
