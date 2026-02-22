@@ -1,0 +1,164 @@
+{
+  "event": "International Business Plan",
+  "total_points": 60,
+  "required_outline": {
+    "I. Executive Summary": "One- to three-page description of the business model",
+    "II. Analysis of the International Business Situation": "Economic, political and legal analysis; trade area and cultural analysis",
+    "III. Problem": "Description of the problems the product/service is addressing",
+    "IV. Customer Segments": "Description of target customers",
+    "V. Unique Value Proposition": "Single, clear, compelling message that states the unique value proposition",
+    "VI. Solution": "Description of the top features of the product/service that solve the problem",
+    "VII. Channels": "Descriptions of the pathways to customers",
+    "VIII. Revenue Stream": "Description of the revenue model and lifetime values",
+    "IX. Cost Structure": "Explanation of customer acquisition costs, distribution costs, human resources costs and additional costs",
+    "X. Detailed Financials": "Projected income and expenses and proposed plan to meet capital needs",
+    "XI. Key Metrics": "Explanation of the key activities that must be measured",
+    "XII. Competitive Advantage": "Explanation of why the product/service cannot be easily copied or bought",
+    "XIII. Conclusion": "Specific request for financing, summary of key points supporting the financial request"
+  },
+  "sections": [
+    {
+      "name": "Executive Summary",
+      "max_points": 10,
+      "description": "One- to three-page description of the business model",
+      "scoring_guide": {
+        "0-3": "Little/No Value",
+        "4-6": "Below Expectations",
+        "7-8": "Meets Expectations",
+        "9-10": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Analysis of the International Business Situation",
+      "max_points": 4,
+      "description": "Description of economic, political and legal analysis; trade area and cultural analysis",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Problem",
+      "max_points": 4,
+      "description": "Description of the problems the product/service is addressing in the international context",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Customer Segments",
+      "max_points": 4,
+      "description": "Description of target customers",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Unique Value Proposition",
+      "max_points": 4,
+      "description": "Single, clear, compelling message that states the unique value proposition",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Solution",
+      "max_points": 4,
+      "description": "Description of the top features of the product/service that solve the problem",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Channels",
+      "max_points": 4,
+      "description": "Descriptions of the pathways to customers",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Revenue Stream",
+      "max_points": 4,
+      "description": "Description of the revenue model and lifetime values",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Cost Structure",
+      "max_points": 5,
+      "description": "Explanation of customer acquisition costs, distribution costs, human resources costs, and any additional costs",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Detailed Financials",
+      "max_points": 5,
+      "description": "Projected income and expenses and proposed plan to meet capital needs",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2-3": "Below Expectations",
+        "4": "Meets Expectations",
+        "5": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Key Metrics",
+      "max_points": 4,
+      "description": "Explanation of the key activities that must be measured",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Competitive Advantage",
+      "max_points": 4,
+      "description": "Explanation of why the product/service cannot be easily copied or bought",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    },
+    {
+      "name": "Conclusion",
+      "max_points": 4,
+      "description": "Specific request for financing and summary of key points supporting the financial request",
+      "scoring_guide": {
+        "0-1": "Little/No Value",
+        "2": "Below Expectations",
+        "3": "Meets Expectations",
+        "4": "Exceeds Expectations"
+      }
+    }
+  ]
+}
