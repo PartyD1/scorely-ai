@@ -12,7 +12,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-4 pt-20 pb-24 max-w-5xl mx-auto">
+      <section className="flex flex-col items-center justify-center text-center px-4 pt-16 pb-16 max-w-5xl mx-auto">
         <p className="text-[#0073C1] text-sm font-semibold uppercase tracking-widest mb-5">
           AI-Powered DECA Grading
         </p>
@@ -32,7 +32,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="max-w-5xl mx-auto px-4 py-20">
+      <section className="max-w-5xl mx-auto px-4 py-12">
         <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-10 text-center">
           How It Works
         </p>
@@ -72,7 +72,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="max-w-5xl mx-auto px-4 py-20">
+      <section className="max-w-5xl mx-auto px-4 py-12">
         <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-10 text-center">
           Built for Precision
         </p>
@@ -124,7 +124,7 @@ export default function Home() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="max-w-5xl mx-auto px-4 py-20 text-center">
+      <section className="max-w-5xl mx-auto px-4 py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#F8FAFC] mb-4">
             Ready to audit your report?
           </h2>
