@@ -47,9 +47,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="AI Rubric Evaluator", lifespan=lifespan)
 
+_origins = ["http://localhost:3000", "http://localhost:3001"]
+_frontend_url = os.getenv("FRONTEND_URL", "").strip()
+if _frontend_url:
+    _origins.append(_frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
