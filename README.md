@@ -1,6 +1,6 @@
-# AI Rubric Evaluator
+# ScorelyAI
 
-An AI-powered grading engine for competitive DECA business reports. Upload a PDF, select an event, and receive deterministic section-level scoring with actionable feedback — in under 20 seconds.
+An AI-powered audit engine for competitive DECA business reports. Upload a PDF, select an event, and receive deterministic section-level scoring with actionable feedback — in under 20 seconds.
 
 ---
 
@@ -201,7 +201,7 @@ cd frontend
 npm run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser.
+Open [http://localhost:3001](http://localhost:3001) in your browser to see ScorelyAI.
 
 ---
 

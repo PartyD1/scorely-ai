@@ -6,6 +6,7 @@ import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ScoreBreakdown from "@/components/ScoreBreakdown";
+import ScorelyLogo from "@/components/ScorelyLogo";
 
 const POLL_INTERVAL = 2000;
 const POLL_TIMEOUT = 60000;
@@ -60,44 +61,53 @@ export default function ResultsPage({
     status === "pending"
       ? "Waiting in queue..."
       : status === "processing"
-      ? "Grading your report..."
+      ? "Analyzing report..."
       : "";
 
   return (
-    <main className="min-h-screen flex flex-col items-center px-4 py-16 relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-purple-600/10 rounded-full blur-3xl -z-10" />
-
-      <Link
-        href="/upload"
-        className="text-purple-400/60 hover:text-purple-300 text-sm mb-8 transition-colors"
-      >
-        &larr; Upload another report
-      </Link>
-
-      {/* Loading state */}
-      {!result && !error && (
-        <div className="flex flex-col items-center justify-center mt-20">
-          <LoadingSpinner message={statusMessage} />
-        </div>
-      )}
-
-      {/* Error state */}
-      {error && (
-        <div className="mt-20 text-center">
-          <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl px-6 py-4 mb-6">
-            {error}
-          </p>
+    <main className="min-h-screen bg-[#000B14] text-[#F8FAFC]">
+      {/* Top bar */}
+      <header className="px-8 py-6 flex items-center justify-between">
+        <ScorelyLogo />
+        {result && (
           <Link
             href="/upload"
-            className="text-purple-400 hover:text-purple-300 underline transition-colors"
+            className="text-[#94A3B8] hover:text-[#F8FAFC] text-sm transition-colors duration-200"
           >
-            Try again
+            New Audit →
           </Link>
-        </div>
-      )}
+        )}
+      </header>
 
-      {/* Results */}
-      {result && <ScoreBreakdown result={result} />}
+      <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
+        {/* Loading state */}
+        {!result && !error && (
+          <div className="flex flex-col items-start justify-center mt-16 w-full max-w-sm">
+            <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-8">
+              {statusMessage || "Processing..."}
+            </p>
+            <LoadingSpinner />
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="mt-16 text-center max-w-sm">
+            <p className="text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-md px-6 py-4 mb-6 text-sm">
+              {error}
+            </p>
+            <Link
+              href="/upload"
+              className="text-[#0073C1] hover:text-[#F8FAFC] text-sm transition-colors duration-200"
+            >
+              ← Try again
+            </Link>
+          </div>
+        )}
+
+        {/* Results */}
+        {result && <ScoreBreakdown result={result} />}
+      </div>
     </main>
   );
 }

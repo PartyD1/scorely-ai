@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI Rubric Evaluator",
-  description: "AI-powered DECA report grading with structured rubrics",
+  title: "ScorelyAI — DECA Report Auditor",
+  description: "AI-powered rubric grading for DECA reports. Upload your report and get instant section-level scoring and feedback.",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={`${inter.variable} font-sans antialiased bg-black min-h-screen`}>
+      <body suppressHydrationWarning className={`${inter.variable} font-sans antialiased bg-[#000B14] min-h-screen text-[#F8FAFC]`}>
         {children}
       </body>
     </html>

@@ -1,28 +1,32 @@
 "use client";
 
-import Link from "next/link";
 import UploadForm from "@/components/UploadForm";
+import ScorelyLogo from "@/components/ScorelyLogo";
 
 export default function UploadPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center px-4 py-16 relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-purple-600/10 rounded-full blur-3xl -z-10" />
+    <main className="min-h-screen bg-[#000B14] text-[#F8FAFC]">
+      {/* Top bar */}
+      <header className="px-8 py-6">
+        <ScorelyLogo />
+      </header>
 
-      <Link
-        href="/"
-        className="text-purple-400/60 hover:text-purple-300 text-sm mb-8 transition-colors"
-      >
-        &larr; Back to home
-      </Link>
+      {/* Content */}
+      <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
+        <div className="w-full max-w-xl">
+          <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-4">
+            New Audit
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#F8FAFC] mb-2">
+            Upload Your Report
+          </h1>
+          <p className="text-[#94A3B8] text-sm mb-10">
+            Select your event and upload your PDF to begin the audit.
+          </p>
 
-      <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-        Upload Your Report
-      </h1>
-      <p className="text-purple-300/60 mb-10">
-        Select an event and upload your PDF to get started
-      </p>
-
-      <UploadForm />
+          <UploadForm />
+        </div>
+      </div>
     </main>
   );
 }
