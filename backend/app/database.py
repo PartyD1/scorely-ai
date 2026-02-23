@@ -18,7 +18,7 @@ _connect_args = {}
 if "localhost" not in db_url and "127.0.0.1" not in db_url:
     _connect_args = {"sslmode": "require"}
 
-engine = create_engine(db_url, connect_args=_connect_args)
+engine = create_engine(db_url, connect_args=_connect_args, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
