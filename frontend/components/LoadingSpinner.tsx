@@ -59,7 +59,7 @@ export default function LoadingSpinner({ message }: { message?: string }) {
                   isCompleted
                     ? "text-[#10B981]"
                     : isActive
-                    ? "text-[#F8FAFC] font-medium"
+                    ? "text-[#E2E8F0] font-medium"
                     : isPending
                     ? "text-[#94A3B8]/30"
                     : ""

@@ -5,7 +5,7 @@ import ScorelyLogo from "@/components/ScorelyLogo";
 
 export default function UploadPage() {
   return (
-    <main className="min-h-screen bg-[#000B14] text-[#F8FAFC]">
+    <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
       {/* Top bar */}
       <header className="px-8 py-6">
         <ScorelyLogo />
@@ -17,7 +17,7 @@ export default function UploadPage() {
           <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-4">
             New Audit
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#F8FAFC] mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
             Upload Your Report
           </h1>
           <p className="text-[#94A3B8] text-sm mb-10">

@@ -65,14 +65,14 @@ export default function ResultsPage({
       : "";
 
   return (
-    <main className="min-h-screen bg-[#000B14] text-[#F8FAFC]">
+    <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
       {/* Top bar */}
       <header className="px-8 py-6 flex items-center justify-between">
         <ScorelyLogo />
         {result && (
           <Link
             href="/upload"
-            className="text-[#94A3B8] hover:text-[#F8FAFC] text-sm transition-colors duration-200"
+            className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
           >
             New Audit →
           </Link>
@@ -98,7 +98,7 @@ export default function ResultsPage({
             </p>
             <Link
               href="/upload"
-              className="text-[#0073C1] hover:text-[#F8FAFC] text-sm transition-colors duration-200"
+              className="text-[#0073C1] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
             >
               ← Try again
             </Link>

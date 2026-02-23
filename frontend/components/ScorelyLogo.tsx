@@ -12,8 +12,8 @@ export default function ScorelyLogo({ asHomeButton = true, className = "" }: Sco
     <div className={`flex items-center gap-3 ${className}`}>
       {/* Data Apex icon — three ascending bars */}
       <svg
-        width="44"
-        height="44"
+        width="36"
+        height="36"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@ export default function ScorelyLogo({ asHomeButton = true, className = "" }: Sco
 
       {/* Wordmark */}
       <span className="font-semibold uppercase tracking-wider text-4xl leading-none">
-        <span className="text-[#F8FAFC]">SCORELY</span>
+        <span className="text-[#E2E8F0]">SCORELY</span>
         <span className="text-[#0073C1] font-bold">AI</span>
       </span>
     </div>

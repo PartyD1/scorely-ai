@@ -73,7 +73,7 @@ export default function UploadForm() {
         <select
           value={selectedEventCode}
           onChange={(e) => setSelectedEventCode(e.target.value)}
-          className="w-full bg-[#00162A] border border-[#1E293B] text-[#F8FAFC] rounded-sm px-4 py-3 focus:outline-none focus:border-[#0073C1] transition-all duration-300 ease-in-out"
+          className="w-full bg-[#00162A] border border-[#1E293B] text-[#E2E8F0] rounded-sm px-4 py-3 focus:outline-none focus:border-[#0073C1] transition-all duration-300 ease-in-out"
         >
           <option value="">
             {clusters.length === 0 ? "Loading events..." : "Select an event..."}

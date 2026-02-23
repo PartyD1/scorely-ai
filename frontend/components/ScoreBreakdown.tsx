@@ -43,7 +43,7 @@ function SectionCard({ section }: { section: SectionScore }) {
           >
             <path d="M5 3l4 4-4 4" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <h3 className="text-[#F8FAFC] font-medium text-sm truncate">{section.name}</h3>
+          <h3 className="text-[#E2E8F0] font-medium text-sm truncate">{section.name}</h3>
         </div>
         <span className={`shrink-0 text-xs font-semibold px-3 py-1 rounded-sm border ml-4 ${semantic.bg} ${semantic.border} ${semantic.text}`}>
           {section.awarded_points}/{section.max_points}
@@ -87,7 +87,7 @@ function PenaltyCard({ penalty }: { penalty: PenaltyCheck }) {
   return (
     <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-5">
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[#F8FAFC] text-sm font-medium leading-snug">{penalty.description}</p>
+        <p className="text-[#E2E8F0] text-sm font-medium leading-snug">{penalty.description}</p>
         <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-sm border ${badge.bg} ${badge.border} ${badge.text}`}>
           {badge.label}
         </span>
@@ -122,7 +122,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
         <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-6">
           Audit Complete
         </p>
-        <p className="text-8xl font-bold tracking-tighter text-[#F8FAFC] mb-2">
+        <p className="text-8xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
           {overallPct.toFixed(0)}%
         </p>
         <p className="text-[#94A3B8] text-sm mb-6">
@@ -141,7 +141,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
       {/* Overall feedback */}
       {result.overall_feedback && (
         <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-6">
-          <h3 className="text-[#F8FAFC] font-semibold text-sm uppercase tracking-wide mb-3">
+          <h3 className="text-[#E2E8F0] font-semibold text-sm uppercase tracking-wide mb-3">
             Overall Feedback
           </h3>
           <p className="text-slate-300 text-base leading-relaxed">
