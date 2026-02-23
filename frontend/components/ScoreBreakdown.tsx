@@ -64,9 +64,15 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
             style={{ width: `${pct}%`, backgroundColor: barColor }}
           />
         </div>
-        <span className="flex-shrink-0 text-xs font-medium text-[#0073C1] hover:text-[#3B9EE8] transition-colors">
-          {expanded ? "Hide Feedback" : "Show Feedback"}
-        </span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          className={`flex-shrink-0 text-[#0073C1] transition-transform duration-300 ease-in-out ${expanded ? "rotate-180" : ""}`}
+        >
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
 
       {/* Deep Dive feedback block */}
