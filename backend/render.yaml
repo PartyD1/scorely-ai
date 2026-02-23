@@ -12,6 +12,8 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: PYTHON_VERSION
+        value: 3.12.0
       - key: UPLOAD_DIR
         value: /tmp/uploads
       - key: MAX_FILE_SIZE_MB
