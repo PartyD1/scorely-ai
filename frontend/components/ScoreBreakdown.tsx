@@ -54,15 +54,9 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
         <span className={`shrink-0 text-xs font-semibold px-3 py-1 rounded-sm border ${semantic.bg} ${semantic.border} ${semantic.text}`}>
           {section.awarded_points}/{section.max_points}
         </span>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          className={`flex-shrink-0 transition-transform duration-300 ease-in-out ${expanded ? "rotate-90" : ""}`}
-        >
-          <path d="M5 3l4 4-4 4" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <span className="flex-shrink-0 text-xs font-medium text-[#0073C1] hover:text-[#3B9EE8] transition-colors">
+          {expanded ? "Hide Feedback" : "Show Feedback"}
+        </span>
       </div>
 
       {/* Bar row */}
