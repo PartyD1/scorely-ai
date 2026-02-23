@@ -82,7 +82,7 @@ export default function ResultsPage({
       <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
         {/* Loading state */}
         {!result && !error && (
-          <div className="flex flex-col items-start justify-center mt-16 w-full max-w-sm">
+          <div className="flex flex-col items-start justify-center mt-16 w-full">
             <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-8">
               {statusMessage || "Processing..."}
             </p>
