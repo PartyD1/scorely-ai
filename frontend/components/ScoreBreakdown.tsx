@@ -16,9 +16,11 @@ function toRoman(n: number): string {
   return result;
 }
 
-function getGradientColor(pct: number): string {
-  const hue = (Math.min(Math.max(pct, 0), 100) / 100) * 120;
-  return `hsl(${hue.toFixed(1)}, 82%, 50%)`;
+function getSemanticColor(pct: number): string {
+  if (pct >= 80) return "#10B981";
+  if (pct >= 60) return "#FBBF24";
+  if (pct >= 40) return "#EF4444";
+  return "#7F1D1D";
 }
 
 function getSemanticBg(pct: number): { bg: string; border: string; text: string } {
@@ -33,7 +35,7 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
   const pct = section.max_points > 0
     ? (section.awarded_points / section.max_points) * 100
     : 0;
-  const barColor = getGradientColor(pct);
+  const barColor = getSemanticColor(pct);
   const semantic = getSemanticBg(pct);
 
   return (
@@ -120,7 +122,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
   const overallPct = result.total_possible > 0
     ? (result.total_awarded / result.total_possible) * 100
     : 0;
-  const overallColor = getGradientColor(overallPct);
+  const overallColor = getSemanticColor(overallPct);
   const hasFlaggedPenalties = result.penalties?.some((p) => p.status === "flagged");
 
   return (
