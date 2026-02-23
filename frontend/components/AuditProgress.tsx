@@ -25,9 +25,9 @@ export default function AuditProgress({ message }: { message?: string }) {
   const { pct, label } = STEPS[step];
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
+    <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
       {/* Progress bar */}
-      <div className="w-full h-3 bg-[#1E293B] rounded-full overflow-hidden">
+      <div className="w-full h-4 bg-[#1E293B] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full bg-[#0073C1] transition-all duration-[3000ms] ease-in-out"
           style={{ width: `${pct}%` }}
@@ -37,7 +37,7 @@ export default function AuditProgress({ message }: { message?: string }) {
       {/* Description */}
       <p
         key={step}
-        className="text-[#94A3B8] text-base text-center"
+        className="text-[#94A3B8] text-lg text-center animate-pulse"
       >
         {message ?? label}
       </p>
