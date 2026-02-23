@@ -7,7 +7,7 @@ const STEPS = [
   { pct: 30, label: "Identifying key arguments and structure..." },
   { pct: 55, label: "Scoring each section against the rubric..." },
   { pct: 78, label: "Weighing your strengths and gaps..." },
-  { pct: 93, label: "Almost there — writing up your results..." },
+  { pct: 93, label: "Almost there! writing up your results..." },
 ];
 
 const STEP_DURATION = 4000;
@@ -41,7 +41,7 @@ export default function AuditProgress({ message, complete }: { message?: string;
         key={complete ? "complete" : step}
         className="text-[#94A3B8] text-lg text-center animate-pulse"
       >
-        {complete ? "Done — loading your results..." : (message ?? label)}
+        {complete ? "Done! Loading your results..." : (message ?? label)}
       </p>
     </div>
   );
