@@ -65,15 +65,15 @@ export default function UploadForm() {
 
   return (
     <div className="w-full max-w-xl mx-auto space-y-6">
-      {/* Event selector with optgroup categories */}
+      {/* Event selector */}
       <div>
-        <label className="block text-purple-300/80 text-sm mb-2">
+        <label className="block text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-2">
           Select Event
         </label>
         <select
           value={selectedEventCode}
           onChange={(e) => setSelectedEventCode(e.target.value)}
-          className="w-full bg-[#120020] border border-purple-500/30 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+          className="w-full bg-[#00162A] border border-[#1E293B] text-[#E2E8F0] rounded-sm px-4 py-3 focus:outline-none focus:border-[#0073C1] transition-all duration-300 ease-in-out"
         >
           <option value="">
             {clusters.length === 0 ? "Loading events..." : "Select an event..."}
@@ -99,12 +99,12 @@ export default function UploadForm() {
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all duration-200 ${
+        className={`border-2 border-dashed rounded-md p-12 text-center cursor-pointer transition-all duration-300 ease-in-out ${
           dragging
-            ? "border-purple-400 bg-purple-500/10"
+            ? "border-[#0073C1] bg-[#0073C1]/5"
             : file
-            ? "border-green-500/50 bg-green-500/5"
-            : "border-purple-500/30 bg-[#0a0015] hover:border-purple-500/50 hover:bg-purple-500/5"
+            ? "border-[#10B981]/50 bg-[#10B981]/5"
+            : "border-[#1E293B] bg-[#00162A] hover:border-[#0073C1]/50"
         }`}
       >
         <input
@@ -119,22 +119,22 @@ export default function UploadForm() {
 
         {file ? (
           <div>
-            <p className="text-green-400 font-medium">{file.name}</p>
-            <p className="text-purple-300/50 text-sm mt-1">
+            <p className="text-[#10B981] font-medium">{file.name}</p>
+            <p className="text-[#94A3B8] text-sm mt-1">
               {(file.size / 1024 / 1024).toFixed(2)} MB
             </p>
-            <p className="text-purple-400/50 text-xs mt-2">
+            <p className="text-[#94A3B8]/50 text-xs mt-2">
               Click or drag to replace
             </p>
           </div>
         ) : (
           <div>
-            <div className="text-purple-400 text-4xl mb-3">+</div>
-            <p className="text-purple-200/70">
+            <div className="text-[#0073C1] text-3xl mb-3 font-light">+</div>
+            <p className="text-[#94A3B8]">
               Drag & drop your PDF here, or click to browse
             </p>
-            <p className="text-purple-400/40 text-sm mt-2">
-              Max {MAX_FILE_SIZE_MB}MB, 25 pages
+            <p className="text-[#94A3B8]/50 text-sm mt-2">
+              Max {MAX_FILE_SIZE_MB}MB · 25 pages · PDF only
             </p>
           </div>
         )}
@@ -142,7 +142,7 @@ export default function UploadForm() {
 
       {/* Error message */}
       {error && (
-        <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
+        <p className="text-[#EF4444] text-sm bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-sm px-4 py-3">
           {error}
         </p>
       )}
@@ -151,9 +151,9 @@ export default function UploadForm() {
       <button
         onClick={handleSubmit}
         disabled={!file || !selectedEventCode || uploading}
-        className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-semibold text-lg hover:from-purple-500 hover:to-fuchsia-500 transition-all duration-200 shadow-lg shadow-purple-600/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+        className="w-full py-4 rounded-sm bg-[#0073C1] text-white font-semibold text-base hover:bg-[#005fa3] transition-all duration-300 ease-in-out disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {uploading ? "Uploading..." : "Grade Report"}
+        {uploading ? "Uploading..." : "Run Audit →"}
       </button>
     </div>
   );
