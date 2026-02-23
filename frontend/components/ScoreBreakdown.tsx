@@ -17,9 +17,9 @@ function toRoman(n: number): string {
 }
 
 function getSemanticColor(pct: number): string {
-  if (pct >= 80) return "#10B981";
-  if (pct >= 60) return "#FBBF24";
-  if (pct >= 40) return "#EF4444";
+  if (pct >= 80) return "#059669";
+  if (pct >= 60) return "#D97706";
+  if (pct >= 40) return "#DC2626";
   return "#7F1D1D";
 }
 
