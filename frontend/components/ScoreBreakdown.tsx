@@ -101,10 +101,9 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
           Overall Score
         </p>
         <p className="text-6xl font-bold text-white mb-1">
-          {result.total_awarded}
-          <span className="text-2xl text-purple-400/60">/{result.total_possible}</span>
+          {overallPct.toFixed(0)}%
         </p>
-        <p className="text-purple-300/50 text-sm">{overallPct.toFixed(0)}%</p>
+        <p className="text-purple-300/50 text-sm">{result.total_awarded}/{result.total_possible} points</p>
 
         {/* Overall progress bar */}
         <div className="w-full h-3 bg-purple-900/30 rounded-full overflow-hidden mt-4">
