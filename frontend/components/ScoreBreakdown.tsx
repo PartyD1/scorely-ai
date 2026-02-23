@@ -168,7 +168,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
               DECA Penalty Checklist
             </h2>
             <p className="text-[#94A3B8]/60 text-xs mt-1">
-              Warnings only — these do not affect your score above. Fix flagged items before submitting.
+              Warnings only. These do not affect your score above. Fix flagged items before submitting.
             </p>
           </div>
           {result.penalties.map((penalty, i) => (

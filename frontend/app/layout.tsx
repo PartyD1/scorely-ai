@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ScorelyAI — DECA Report Auditor",
+  title: "ScorelyAI: DECA Report Auditor",
   description: "AI-powered rubric grading for DECA reports. Upload your report and get instant section-level scoring and feedback.",
 };
 

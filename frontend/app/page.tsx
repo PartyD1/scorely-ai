@@ -31,9 +31,6 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Divider */}
-      <div className="border-t border-[#1E293B] max-w-5xl mx-auto" />
-
       {/* How It Works */}
       <section className="max-w-5xl mx-auto px-4 py-20">
         <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-10 text-center">
@@ -74,9 +71,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="border-t border-[#1E293B] max-w-5xl mx-auto" />
-
       {/* Features */}
       <section className="max-w-5xl mx-auto px-4 py-20">
         <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-10 text-center">
@@ -93,7 +87,7 @@ export default function Home() {
               ),
               title: "Rubric-Based Precision",
               description:
-                "Scoring is anchored to the exact DECA event rubric — not general writing quality. Every point is justified.",
+                "Scoring is anchored to the exact DECA event rubric, not general writing quality. Every point is justified.",
             },
             {
               icon: (
@@ -114,7 +108,7 @@ export default function Home() {
               ),
               title: "Actionable Feedback",
               description:
-                "Each section includes specific commentary — what you did well, what's missing, and how to improve.",
+                "Each section includes specific commentary: what you did well, what's missing, and how to improve.",
             },
           ].map((feature) => (
             <div
@@ -130,8 +124,7 @@ export default function Home() {
       </section>
 
       {/* Bottom CTA */}
-      <div className="border-t border-[#1E293B]">
-        <section className="max-w-5xl mx-auto px-4 py-20 text-center">
+      <section className="max-w-5xl mx-auto px-4 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tighter text-[#F8FAFC] mb-4">
             Ready to audit your report?
           </h2>
@@ -145,7 +138,6 @@ export default function Home() {
             Start Audit →
           </Link>
         </section>
-      </div>
 
       {/* Footer */}
       <footer className="border-t border-[#1E293B] px-8 py-6 max-w-5xl mx-auto">
