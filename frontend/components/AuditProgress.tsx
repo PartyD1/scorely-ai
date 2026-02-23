@@ -12,7 +12,7 @@ const STEPS = [
 
 const STEP_DURATION = 4000;
 
-export default function AuditProgress({ message }: { message?: string }) {
+export default function AuditProgress({ message, complete }: { message?: string; complete?: boolean }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -23,23 +23,25 @@ export default function AuditProgress({ message }: { message?: string }) {
   }, []);
 
   const { pct, label } = STEPS[step];
+  const displayPct = complete ? 100 : pct;
+  const transitionDuration = complete ? "600ms" : "3000ms";
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
       {/* Progress bar */}
       <div className="w-full h-4 bg-[#1E293B] rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full bg-[#0073C1] transition-all duration-[3000ms] ease-in-out"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full bg-[#0073C1] ease-in-out"
+          style={{ width: `${displayPct}%`, transition: `width ${transitionDuration}` }}
         />
       </div>
 
       {/* Description */}
       <p
-        key={step}
+        key={complete ? "complete" : step}
         className="text-[#94A3B8] text-lg text-center animate-pulse"
       >
-        {message ?? label}
+        {complete ? "Done — loading your results..." : (message ?? label)}
       </p>
     </div>
   );

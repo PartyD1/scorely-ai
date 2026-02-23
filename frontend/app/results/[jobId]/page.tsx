@@ -19,6 +19,7 @@ export default function ResultsPage({
   const { jobId } = use(params);
   const [status, setStatus] = useState<string>("pending");
   const [result, setResult] = useState<GradingResult | null>(null);
+  const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -31,8 +32,9 @@ export default function ResultsPage({
         setStatus(data.status);
 
         if (data.status === "complete" && data.result) {
-          setResult(data.result);
           clearInterval(interval);
+          setCompleting(true);
+          setTimeout(() => setResult(data.result), 900);
           return;
         }
 
@@ -86,7 +88,7 @@ export default function ResultsPage({
             <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-8">
               {statusMessage || "Processing..."}
             </p>
-            <AuditProgress />
+            <AuditProgress complete={completing} />
           </div>
         )}
 
