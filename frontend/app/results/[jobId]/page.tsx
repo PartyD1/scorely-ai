@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import AuditProgress from "@/components/AuditProgress";
 import ScoreBreakdown from "@/components/ScoreBreakdown";
 import ScorelyLogo from "@/components/ScorelyLogo";
 
@@ -86,7 +86,7 @@ export default function ResultsPage({
             <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-8">
               {statusMessage || "Processing..."}
             </p>
-            <LoadingSpinner />
+            <AuditProgress />
           </div>
         )}
 

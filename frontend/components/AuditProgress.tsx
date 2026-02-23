@@ -12,7 +12,7 @@ const STEPS = [
 
 const STEP_DURATION = 4000;
 
-export default function LoadingSpinner({ message }: { message?: string }) {
+export default function AuditProgress({ message }: { message?: string }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -25,11 +25,11 @@ export default function LoadingSpinner({ message }: { message?: string }) {
   const { pct, label } = STEPS[step];
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
+    <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
       {/* Progress bar */}
-      <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+      <div className="w-full h-3 bg-[#1E293B] rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full bg-[#0073C1] transition-all duration-[1200ms] ease-in-out"
+          className="h-full rounded-full bg-[#0073C1] transition-all duration-[3000ms] ease-in-out"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -37,7 +37,7 @@ export default function LoadingSpinner({ message }: { message?: string }) {
       {/* Description */}
       <p
         key={step}
-        className="text-[#94A3B8] text-sm text-center"
+        className="text-[#94A3B8] text-base text-center"
       >
         {message ?? label}
       </p>
