@@ -57,21 +57,14 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
       </div>
 
       {/* Bar row */}
-      <div className="flex items-center gap-3 px-6 pb-3">
+      <div className="flex items-center gap-3 px-6 pb-5">
         <div className="flex-1 h-2 bg-[#000B14] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500 ease-in-out"
             style={{ width: `${pct}%`, backgroundColor: barColor }}
           />
         </div>
-        <span className="flex-shrink-0 text-xs font-medium text-[#94A3B8] w-10 text-right">
-          {pct.toFixed(0)}%
-        </span>
-      </div>
-
-      {/* Show/Hide feedback link */}
-      <div className="px-6 pb-4 text-right">
-        <span className="text-xs font-medium text-[#0073C1] hover:text-[#3B9EE8] transition-colors">
+        <span className="flex-shrink-0 text-xs font-medium text-[#0073C1] hover:text-[#3B9EE8] transition-colors">
           {expanded ? "Hide Feedback" : "Show Feedback"}
         </span>
       </div>
