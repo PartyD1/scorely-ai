@@ -3,11 +3,22 @@
 import { useState } from "react";
 import { GradingResult, PenaltyCheck, SectionScore } from "@/types/grading";
 
-function getSemanticColor(pct: number): string {
-  if (pct >= 80) return "#10B981";
-  if (pct >= 60) return "#FBBF24";
-  if (pct >= 40) return "#EF4444";
-  return "#7F1D1D";
+function toRoman(n: number): string {
+  const vals = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  const syms = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+  let result = "";
+  for (let i = 0; i < vals.length; i++) {
+    while (n >= vals[i]) {
+      result += syms[i];
+      n -= vals[i];
+    }
+  }
+  return result;
+}
+
+function getGradientColor(pct: number): string {
+  const hue = (Math.min(Math.max(pct, 0), 100) / 100) * 120;
+  return `hsl(${hue.toFixed(1)}, 82%, 50%)`;
 }
 
 function getSemanticBg(pct: number): { bg: string; border: string; text: string } {
@@ -17,12 +28,12 @@ function getSemanticBg(pct: number): { bg: string; border: string; text: string 
   return { bg: "bg-[#7F1D1D]/20", border: "border-[#7F1D1D]/40", text: "text-red-300" };
 }
 
-function SectionCard({ section }: { section: SectionScore }) {
+function SectionCard({ section, index }: { section: SectionScore; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const pct = section.max_points > 0
     ? (section.awarded_points / section.max_points) * 100
     : 0;
-  const color = getSemanticColor(pct);
+  const barColor = getGradientColor(pct);
   const semantic = getSemanticBg(pct);
 
   return (
@@ -30,39 +41,46 @@ function SectionCard({ section }: { section: SectionScore }) {
       className="bg-[#00162A] border border-[#1E293B] rounded-md cursor-pointer hover:border-[#0073C1]/40 transition-all duration-300 ease-in-out overflow-hidden"
       onClick={() => setExpanded(!expanded)}
     >
-      {/* Row header */}
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          {/* Expand chevron */}
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            className={`flex-shrink-0 transition-transform duration-300 ease-in-out ${expanded ? "rotate-90" : ""}`}
-          >
-            <path d="M5 3l4 4-4 4" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <h3 className="text-[#E2E8F0] font-medium text-sm truncate">{section.name}</h3>
-        </div>
-        <span className={`shrink-0 text-xs font-semibold px-3 py-1 rounded-sm border ml-4 ${semantic.bg} ${semantic.border} ${semantic.text}`}>
+      {/* Header row */}
+      <div className="flex items-center gap-4 px-6 pt-5 pb-3">
+        <span className="flex-shrink-0 font-mono text-xs font-semibold text-[#94A3B8] w-8">
+          {toRoman(index + 1)}.
+        </span>
+        <h3 className="text-[#E2E8F0] font-medium text-sm flex-1 min-w-0 truncate">
+          {section.name}
+        </h3>
+        <span className={`shrink-0 text-xs font-semibold px-3 py-1 rounded-sm border ${semantic.bg} ${semantic.border} ${semantic.text}`}>
           {section.awarded_points}/{section.max_points}
         </span>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 14 14"
+          fill="none"
+          className={`flex-shrink-0 transition-transform duration-300 ease-in-out ${expanded ? "rotate-90" : ""}`}
+        >
+          <path d="M5 3l4 4-4 4" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
 
-      {/* Progress bar — full width, flush */}
-      <div className="w-full h-[3px] bg-[#000B14]">
-        <div
-          className="h-full transition-all duration-500 ease-in-out"
-          style={{ width: `${pct}%`, backgroundColor: color }}
-        />
+      {/* Bar row */}
+      <div className="flex items-center gap-3 px-6 pb-5">
+        <div className="flex-1 h-2 bg-[#000B14] rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500 ease-in-out"
+            style={{ width: `${pct}%`, backgroundColor: barColor }}
+          />
+        </div>
+        <span className="flex-shrink-0 text-xs font-medium text-[#94A3B8] w-10 text-right">
+          {pct.toFixed(0)}%
+        </span>
       </div>
 
       {/* Deep Dive feedback block */}
       {expanded && (
         <div
           className="px-6 py-5 border-t border-[#1E293B]"
-          style={{ backgroundColor: "#001E35", borderLeft: `2px solid ${color}` }}
+          style={{ backgroundColor: "#001E35", borderLeft: `2px solid ${barColor}` }}
         >
           <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-3">
             Deep Dive
@@ -102,7 +120,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
   const overallPct = result.total_possible > 0
     ? (result.total_awarded / result.total_possible) * 100
     : 0;
-  const overallColor = getSemanticColor(overallPct);
+  const overallColor = getGradientColor(overallPct);
   const hasFlaggedPenalties = result.penalties?.some((p) => p.status === "flagged");
 
   return (
@@ -130,9 +148,9 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
         </p>
 
         {/* Overall progress bar */}
-        <div className="w-full h-[4px] bg-[#000B14] rounded-sm overflow-hidden">
+        <div className="w-full h-2 bg-[#000B14] rounded-full overflow-hidden">
           <div
-            className="h-full transition-all duration-700 ease-in-out"
+            className="h-full rounded-full transition-all duration-700 ease-in-out"
             style={{ width: `${overallPct}%`, backgroundColor: overallColor }}
           />
         </div>
@@ -151,12 +169,12 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
       )}
 
       {/* Section breakdown */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest pb-2">
           Section Breakdown
         </h2>
-        {result.sections.map((section) => (
-          <SectionCard key={section.name} section={section} />
+        {result.sections.map((section, i) => (
+          <SectionCard key={section.name} section={section} index={i} />
         ))}
       </div>
 
