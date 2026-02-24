@@ -337,6 +337,14 @@ def grade_report(db: Session, job_id: str) -> None:
                         section["feedback"] = vision_result["appearance_feedback"]
                         break
 
+            # Append visual feedback to overall_feedback so it surfaces in the summary
+            if vision_result.get("appearance_feedback"):
+                result["overall_feedback"] = (
+                    result["overall_feedback"].rstrip()
+                    + "\n\nVisual Assessment: "
+                    + vision_result["appearance_feedback"]
+                )
+
         except Exception as vision_err:
             logger.warning(
                 "Job %s: vision check failed (%s) — using text-based SOA and appearance results",
