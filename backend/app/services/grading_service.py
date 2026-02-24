@@ -3,16 +3,16 @@
 import json
 import logging
 import os
+import time
 from datetime import datetime
 
-from openai import OpenAI
+import google.generativeai as genai
 from sqlalchemy.orm import Session
 
 from ..models import Job
 from ..schemas import GradingResult
 from ..utils.file_cleanup import delete_file
-from ..utils.token_counter import truncate_text
-from .pdf_service import extract_text, get_page_count
+from .pdf_service import get_page_count
 from ..events_data import get_cluster_for_code, get_event_by_code
 from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
@@ -45,20 +45,22 @@ High scores require both: (1) genuine fulfillment of this specific event's purpo
 PENALTY CHECKLIST:
 After grading all rubric sections, evaluate each official DECA written entry requirement below.
 For each penalty check, set status to:
-- "flagged"       if you can detect the issue from the extracted text
-- "clear"         if the text confirms the requirement is met
-- "manual_check"  if it cannot be determined from extracted text alone
+- "flagged"       if you can detect the issue from the document
+- "clear"         if the document confirms the requirement is met
+- "manual_check"  if it cannot be determined from the document alone
 
 Penalty checks to evaluate:
 1. Statement of Assurances and Academic Integrity (15-point penalty if missing)
-   Check if the document text includes a Statement of Assurances or Academic Integrity page.
+   Check if the document includes a Statement of Assurances or Academic Integrity page.
    Always include a note that the physical/digital signature must be manually verified regardless of status.
 
 2. Written entry follows the required outline (5-point penalty)
    Based on your evaluation above using the required outline, does the document follow the prescribed structure?
 
-REPORT TEXT:
-{extracted_text}
+Please read the attached PDF document carefully, including all text, tables, charts, and visual elements.
+
+VISUAL EVALUATION NOTE:
+If this rubric includes an "Appearance and Word Usage" section, use your ability to see the actual document to assess it accurately. Evaluate: professional formatting and consistent styling, quality and clarity of any charts or tables, effective use of white space, visual hierarchy, and overall neatness and presentation. Do not guess based on text alone — assess what you can actually see in the PDF.
 
 Grade each section independently. For each section:
 1. Determine whether the content actually serves this specific event's purpose — not just whether the section exists or is well-written
@@ -67,39 +69,41 @@ Grade each section independently. For each section:
 
 Return ONLY valid JSON matching the required schema. Do not add commentary outside the JSON structure."""
 
-GRADING_SCHEMA = {
-    "type": "object",
+# Gemini uses UPPERCASE type names in response schemas
+GEMINI_RESPONSE_SCHEMA = {
+    "type": "OBJECT",
     "properties": {
-        "event_name": {"type": "string"},
-        "total_possible": {"type": "integer"},
-        "total_awarded": {"type": "integer"},
+        "event_name": {"type": "STRING"},
+        "total_possible": {"type": "INTEGER"},
+        "total_awarded": {"type": "INTEGER"},
         "sections": {
-            "type": "array",
+            "type": "ARRAY",
             "items": {
-                "type": "object",
+                "type": "OBJECT",
                 "properties": {
-                    "name": {"type": "string"},
-                    "max_points": {"type": "integer"},
-                    "awarded_points": {"type": "integer"},
-                    "feedback": {"type": "string"},
+                    "name": {"type": "STRING"},
+                    "max_points": {"type": "INTEGER"},
+                    "awarded_points": {"type": "INTEGER"},
+                    "feedback": {"type": "STRING"},
                 },
                 "required": ["name", "max_points", "awarded_points", "feedback"],
-                "additionalProperties": False,
             },
         },
-        "overall_feedback": {"type": "string"},
+        "overall_feedback": {"type": "STRING"},
         "penalties": {
-            "type": "array",
+            "type": "ARRAY",
             "items": {
-                "type": "object",
+                "type": "OBJECT",
                 "properties": {
-                    "description": {"type": "string"},
-                    "penalty_points": {"type": "integer"},
-                    "status": {"type": "string", "enum": ["flagged", "clear", "manual_check"]},
-                    "note": {"type": "string"},
+                    "description": {"type": "STRING"},
+                    "penalty_points": {"type": "INTEGER"},
+                    "status": {
+                        "type": "STRING",
+                        "enum": ["flagged", "clear", "manual_check"],
+                    },
+                    "note": {"type": "STRING"},
                 },
                 "required": ["description", "penalty_points", "status", "note"],
-                "additionalProperties": False,
             },
         },
     },
@@ -111,7 +115,6 @@ GRADING_SCHEMA = {
         "overall_feedback",
         "penalties",
     ],
-    "additionalProperties": False,
 }
 
 
@@ -163,14 +166,8 @@ def grade_report(db: Session, job_id: str) -> None:
         job.status = "processing"
         db.commit()
 
-        # Get page count before extraction (file deleted in finally)
+        # Get page count before grading (file deleted in finally)
         page_count = get_page_count(job.file_path)
-
-        # Extract text
-        text = extract_text(job.file_path)
-        text, was_truncated = truncate_text(text)
-        if was_truncated:
-            logger.warning("Job %s: text was truncated", job_id)
 
         # Resolve event context
         if job.event_code:
@@ -200,8 +197,16 @@ def grade_report(db: Session, job_id: str) -> None:
         if not required_outline:
             required_outline = rubric.rubric_data.get("required_outline")
 
-        # Call LLM (page count penalty is computed in Python, not by the LLM)
-        result = call_llm(cluster_name, specific_name, event_code, event_description, rubric.rubric_data, text, required_outline)
+        # Call LLM — Gemini reads the raw PDF natively (text + visual)
+        result = call_llm(
+            cluster_name,
+            specific_name,
+            event_code,
+            event_description,
+            rubric.rubric_data,
+            job.file_path,
+            required_outline,
+        )
 
         # Override event_name in LLM output with the specific event display string
         result["event_name"] = f"{specific_name} ({event_code})" if job.event_code else specific_name
@@ -225,9 +230,9 @@ def grade_report(db: Session, job_id: str) -> None:
                 section["awarded_points"] = section["max_points"]
         result["total_awarded"] = sum(s["awarded_points"] for s in result.get("sections", []))
 
-        # Surface truncation info so the frontend can warn the user
-        result["was_truncated"] = was_truncated
-        result["truncated_at_tokens"] = 25000 if was_truncated else None
+        # Gemini reads the full document natively — no truncation ever occurs
+        result["was_truncated"] = False
+        result["truncated_at_tokens"] = None
 
         # Validate with Pydantic
         grading_result = GradingResult(**result)
@@ -254,11 +259,12 @@ def call_llm(
     event_code: str,
     event_description: str,
     rubric_data: dict,
-    extracted_text: str,
+    file_path: str,
     required_outline: dict | None = None,
 ) -> dict:
-    """Call OpenAI API with structured output."""
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    """Upload PDF to Gemini and grade it natively (text + visual)."""
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+    model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
     if required_outline:
         required_outline_section = (
@@ -279,27 +285,40 @@ def call_llm(
         event_description=event_description,
         required_outline_section=required_outline_section,
         rubric_json=json.dumps(rubric_data, indent=2),
-        extracted_text=extracted_text,
     )
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        temperature=0.2,
-        messages=[{"role": "user", "content": prompt}],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "grading_result",
-                "strict": True,
-                "schema": GRADING_SCHEMA,
-            },
-        },
-    )
+    # Upload PDF to Gemini File API
+    uploaded = genai.upload_file(path=file_path, mime_type="application/pdf")
+    logger.info("Uploaded PDF to Gemini File API: %s", uploaded.name)
 
-    content = response.choices[0].message.content
-    logger.info(
-        "LLM call completed. Tokens: prompt=%d, completion=%d",
-        response.usage.prompt_tokens,
-        response.usage.completion_tokens,
-    )
-    return json.loads(content)
+    # Wait for file to be ready (usually instant for PDFs but guard against PROCESSING state)
+    max_wait = 30  # seconds
+    waited = 0
+    while uploaded.state.name == "PROCESSING" and waited < max_wait:
+        time.sleep(2)
+        waited += 2
+        uploaded = genai.get_file(uploaded.name)
+
+    if uploaded.state.name != "ACTIVE":
+        raise ValueError(f"Gemini file not ready after upload: state={uploaded.state.name}")
+
+    try:
+        model = genai.GenerativeModel(
+            model_name,
+            generation_config=genai.GenerationConfig(
+                temperature=0.2,
+                response_mime_type="application/json",
+                response_schema=GEMINI_RESPONSE_SCHEMA,
+            ),
+        )
+        response = model.generate_content([prompt, uploaded])
+    finally:
+        # Always clean up the file from Gemini's servers
+        try:
+            genai.delete_file(uploaded.name)
+            logger.info("Deleted Gemini file: %s", uploaded.name)
+        except Exception as cleanup_err:
+            logger.warning("Failed to delete Gemini file %s: %s", uploaded.name, cleanup_err)
+
+    logger.info("Gemini grading call completed for event %s", event_code)
+    return json.loads(response.text)
