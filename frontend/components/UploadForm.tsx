@@ -22,7 +22,11 @@ export default function UploadForm() {
       .then((data) => {
         setClusters(data);
       })
-      .catch(() => setError("Failed to load events. Is the backend running?"));
+      .catch(() =>
+        setError(
+          "Could not load events — the backend may be starting up. Refresh in 30 seconds."
+        )
+      );
   }, []);
 
   const validateFile = (f: File): string | null => {

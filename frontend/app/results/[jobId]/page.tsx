@@ -9,7 +9,7 @@ import ScoreBreakdown from "@/components/ScoreBreakdown";
 import ScorelyLogo from "@/components/ScorelyLogo";
 
 const POLL_INTERVAL = 2000;
-const POLL_TIMEOUT = 60000;
+const POLL_TIMEOUT = 180000; // 3 min — accounts for Render free-tier cold start (30–60 s)
 
 export default function ResultsPage({
   params,
@@ -45,7 +45,9 @@ export default function ResultsPage({
         }
 
         if (Date.now() - startTime > POLL_TIMEOUT) {
-          setError("Request timed out. Please try again.");
+          setError(
+            "The backend is taking longer than expected — it may still be starting up. Please wait a moment and try again."
+          );
           clearInterval(interval);
         }
       } catch {
