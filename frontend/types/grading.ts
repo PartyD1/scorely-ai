@@ -31,6 +31,8 @@ export interface GradingResult {
   sections: SectionScore[];
   overall_feedback: string;
   penalties?: PenaltyCheck[];
+  was_truncated?: boolean;
+  truncated_at_tokens?: number;
 }
 
 export interface JobStatus {

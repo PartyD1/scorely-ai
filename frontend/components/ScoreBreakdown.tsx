@@ -124,6 +124,17 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* Truncation warning banner */}
+      {result.was_truncated && (
+        <div className="flex items-center gap-3 bg-[#FBBF24]/10 border border-[#FBBF24]/40 rounded-md px-5 py-4">
+          <span className="text-[#FBBF24] text-lg">⚠</span>
+          <p className="text-[#FBBF24] text-sm font-medium">
+            Your document was too long and was truncated to ~{result.truncated_at_tokens?.toLocaleString()} tokens.
+            Grading reflects the first portion of your report only.
+          </p>
+        </div>
+      )}
+
       {/* Penalty warning banner */}
       {hasFlaggedPenalties && (
         <div className="flex items-center gap-3 bg-[#EF4444]/10 border border-[#EF4444]/40 rounded-md px-5 py-4">
