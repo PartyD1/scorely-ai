@@ -88,3 +88,41 @@ def detect_document_structure(file_path: str) -> dict:
     return {"has_title_page": has_title_page, "has_toc": has_toc, "has_soa": has_soa}
 
 
+def extract_text(file_path: str) -> str:
+    """Extract text from all pages of a PDF."""
+    try:
+        doc = fitz.open(file_path)
+        text_parts = []
+        for page in doc:
+            text_parts.append(page.get_text())
+        doc.close()
+        full_text = "\n".join(text_parts)
+        if not full_text.strip():
+            raise ValueError(
+                "Unable to extract text from PDF. Ensure it's a typed document."
+            )
+        return full_text
+    except ValueError:
+        raise
+    except Exception as e:
+        logger.error("PDF extraction failed: %s", e)
+        raise ValueError(
+            "Unable to extract text from PDF. Ensure it's a typed document."
+        ) from e
+
+
+def render_pages_as_images(file_path: str, page_indices: list[int]) -> list[bytes]:
+    """Render specific PDF pages as PNG images at 150 DPI.
+
+    Returns a list of PNG bytes, one per requested page index.
+    Skips indices that are out of range.
+    """
+    doc = fitz.open(file_path)
+    images = []
+    for i in page_indices:
+        if 0 <= i < len(doc):
+            pixmap = doc[i].get_pixmap(dpi=150)
+            images.append(pixmap.tobytes("png"))
+    doc.close()
+    return images
+
