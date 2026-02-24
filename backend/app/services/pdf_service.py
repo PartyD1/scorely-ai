@@ -109,3 +109,20 @@ def extract_text(file_path: str) -> str:
         raise ValueError(
             "Unable to extract text from PDF. Ensure it's a typed document."
         ) from e
+
+
+def render_pages_as_images(file_path: str, page_indices: list[int]) -> list[bytes]:
+    """Render specific PDF pages as PNG images at 150 DPI.
+
+    Returns a list of PNG bytes, one per requested page index.
+    Skips indices that are out of range.
+    """
+    doc = fitz.open(file_path)
+    images = []
+    for i in page_indices:
+        if 0 <= i < len(doc):
+            pixmap = doc[i].get_pixmap(dpi=150)
+            images.append(pixmap.tobytes("png"))
+    doc.close()
+    return images
+

@@ -147,9 +147,20 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
 
       {/* Overall score hero card */}
       <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-10 text-center">
-        <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-6">
-          Audit Complete
-        </p>
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest">
+            Audit Complete
+          </p>
+          {result.graded_by === "gemini" ? (
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-sm border bg-[#6366F1]/10 border-[#6366F1]/40 text-[#A5B4FC]">
+              ✦ Gemini 2.5 Flash
+            </span>
+          ) : result.graded_by === "openai" ? (
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-sm border bg-[#10B981]/10 border-[#10B981]/40 text-[#6EE7B7]">
+              ⬡ GPT-4o-mini
+            </span>
+          ) : null}
+        </div>
         <p className="text-8xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
           {overallPct.toFixed(0)}%
         </p>
@@ -172,9 +183,24 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
           <h3 className="text-[#E2E8F0] font-semibold text-sm uppercase tracking-wide mb-3">
             Overall Feedback
           </h3>
-          <p className="text-slate-300 text-base leading-relaxed">
-            {result.overall_feedback}
-          </p>
+          <div className="space-y-4">
+            {result.overall_feedback.split("\n\n").map((para, i) => {
+              const visualPrefix = "Visual Assessment: ";
+              if (para.startsWith(visualPrefix)) {
+                return (
+                  <p key={i} className="text-slate-300 text-base leading-relaxed">
+                    <span className="font-semibold text-[#E2E8F0]">Visual Assessment: </span>
+                    {para.slice(visualPrefix.length)}
+                  </p>
+                );
+              }
+              return (
+                <p key={i} className="text-slate-300 text-base leading-relaxed">
+                  {para}
+                </p>
+              );
+            })}
+          </div>
         </div>
       )}
 

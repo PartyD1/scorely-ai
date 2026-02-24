@@ -40,6 +40,7 @@ class GradingResult(BaseModel):
     penalties: List[PenaltyCheck] = []
     was_truncated: bool = False
     truncated_at_tokens: Optional[int] = None
+    graded_by: str = "openai"
 
 
 class UploadResponse(BaseModel):
