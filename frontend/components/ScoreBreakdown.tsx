@@ -183,9 +183,13 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
           <h3 className="text-[#E2E8F0] font-semibold text-sm uppercase tracking-wide mb-3">
             Overall Feedback
           </h3>
-          <p className="text-slate-300 text-base leading-relaxed">
-            {result.overall_feedback}
-          </p>
+          <div className="space-y-4">
+            {result.overall_feedback.split("\n\n").map((para, i) => (
+              <p key={i} className="text-slate-300 text-base leading-relaxed">
+                {para}
+              </p>
+            ))}
+          </div>
         </div>
       )}
 
