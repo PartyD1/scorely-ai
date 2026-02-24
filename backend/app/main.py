@@ -50,10 +50,9 @@ app = FastAPI(title="AI Rubric Evaluator", lifespan=lifespan)
 _origins = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://scorely-ai.vercel.app",  # production
 ]
 _frontend_url = os.getenv("FRONTEND_URL", "").strip()
-if _frontend_url and _frontend_url not in _origins:
+if _frontend_url:
     _origins.append(_frontend_url)
 
 app.add_middleware(

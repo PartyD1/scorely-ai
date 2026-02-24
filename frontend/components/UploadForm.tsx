@@ -6,6 +6,8 @@ import { getEvents, uploadPdf } from "@/lib/api";
 import { ClusterEvents } from "@/types/grading";
 
 const MAX_FILE_SIZE_MB = 15;
+const MAX_EVENT_RETRIES = 3;
+const RETRY_DELAY_MS = 5000;
 
 export default function UploadForm() {
   const router = useRouter();
@@ -16,18 +18,28 @@ export default function UploadForm() {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [eventsFailedToLoad, setEventsFailedToLoad] = useState(false);
+  const retryCountRef = useRef(0);
+
+  const fetchEvents = useCallback(async () => {
+    setEventsFailedToLoad(false);
+    try {
+      const data = await getEvents();
+      setClusters(data);
+      retryCountRef.current = 0;
+    } catch {
+      if (retryCountRef.current < MAX_EVENT_RETRIES) {
+        retryCountRef.current += 1;
+        setTimeout(fetchEvents, RETRY_DELAY_MS);
+      } else {
+        setEventsFailedToLoad(true);
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    getEvents()
-      .then((data) => {
-        setClusters(data);
-      })
-      .catch(() =>
-        setError(
-          "Could not load events — the backend may be starting up. Refresh in 30 seconds."
-        )
-      );
-  }, []);
+    fetchEvents();
+  }, [fetchEvents]);
 
   const validateFile = (f: File): string | null => {
     if (!f.name.toLowerCase().endsWith(".pdf")) return "Only PDF files are accepted";
@@ -80,7 +92,7 @@ export default function UploadForm() {
           className="w-full bg-[#00162A] border border-[#1E293B] text-[#E2E8F0] rounded-sm px-4 py-3 focus:outline-none focus:border-[#0073C1] transition-all duration-300 ease-in-out"
         >
           <option value="">
-            {clusters.length === 0 ? "Loading events..." : "Select an event..."}
+            {clusters.length === 0 && !eventsFailedToLoad ? "Loading events..." : "Select an event..."}
           </option>
           {clusters.map((cluster) => (
             <optgroup key={cluster.cluster_name} label={cluster.display_label}>
@@ -143,6 +155,24 @@ export default function UploadForm() {
           </div>
         )}
       </div>
+
+      {/* Events failed to load */}
+      {eventsFailedToLoad && (
+        <div className="flex items-center gap-3 text-[#FBBF24] text-sm bg-[#FBBF24]/10 border border-[#FBBF24]/30 rounded-sm px-4 py-3">
+          <span className="flex-1">
+            Could not load events — the backend may be starting up.
+          </span>
+          <button
+            onClick={() => {
+              retryCountRef.current = 0;
+              fetchEvents();
+            }}
+            className="shrink-0 text-xs font-semibold underline hover:no-underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Error message */}
       {error && (

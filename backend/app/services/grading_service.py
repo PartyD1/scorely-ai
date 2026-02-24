@@ -225,6 +225,10 @@ def grade_report(db: Session, job_id: str) -> None:
                 section["awarded_points"] = section["max_points"]
         result["total_awarded"] = sum(s["awarded_points"] for s in result.get("sections", []))
 
+        # Surface truncation info so the frontend can warn the user
+        result["was_truncated"] = was_truncated
+        result["truncated_at_tokens"] = 25000 if was_truncated else None
+
         # Validate with Pydantic
         grading_result = GradingResult(**result)
 
@@ -280,7 +284,7 @@ def call_llm(
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        temperature=0.3,
+        temperature=0.2,
         messages=[{"role": "user", "content": prompt}],
         response_format={
             "type": "json_schema",

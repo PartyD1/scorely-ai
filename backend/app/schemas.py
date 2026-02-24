@@ -38,6 +38,8 @@ class GradingResult(BaseModel):
     sections: List[SectionScore]
     overall_feedback: str
     penalties: List[PenaltyCheck] = []
+    was_truncated: bool = False
+    truncated_at_tokens: Optional[int] = None
 
 
 class UploadResponse(BaseModel):
