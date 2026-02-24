@@ -123,9 +123,16 @@ VISION_PROMPT_WITH_APPEARANCE = """You are reviewing selected pages from a DECA 
 
 TASK 1 — STATEMENT OF ASSURANCES:
 Carefully examine all provided pages for a "Statement of Assurances" or "Academic Integrity" form.
-This page may be printed text, a scanned image of a physical form, or a photographed document.
-Look for: the title "Statement of Assurances", signature lines, assurance checkboxes, or any official DECA integrity agreement.
-Always note that physical/digital signatures must be manually verified regardless of what you find.
+This page may appear as printed text, a scanned image of a physical form, or a photographed document.
+
+Step 1: Determine if the SOA page exists at all (look for the title, checkboxes, and signature lines).
+Step 2: If the page exists, look closely at the signature line(s). Is there a handwritten signature, typed name, or digital signature present — or are the signature lines blank/empty?
+
+Set soa_status to exactly one of:
+- "signed"           — SOA page found AND a signature is visibly present
+- "unsigned"         — SOA page found BUT the signature line is blank or empty
+- "not_found"        — No SOA page found anywhere in the provided pages
+- "cannot_determine" — A possible SOA page was found but the signature area is unclear or illegible
 
 TASK 2 — APPEARANCE AND WORD USAGE:
 Evaluate the visual presentation and writing quality of this report based on these pages.
@@ -136,27 +143,37 @@ Scoring guide:
 Assess: professional formatting consistency, layout clarity, quality of any charts/tables/graphs, use of white space, visual hierarchy, neatness, grammar, and word usage.
 
 Return ONLY valid JSON:
-{{"soa_found": true or false, "soa_note": "what you found or did not find — note signature verification is required", "appearance_score": integer, "appearance_feedback": "specific, critical feedback on appearance and word usage"}}"""
+{{"soa_status": "signed|unsigned|not_found|cannot_determine", "soa_note": "describe exactly what you found and whether a signature was present", "appearance_score": integer, "appearance_feedback": "specific, critical feedback on appearance and word usage"}}"""
 
 VISION_PROMPT_SOA_ONLY = """You are reviewing selected pages from a DECA business report.
 
 Carefully examine all provided pages for a "Statement of Assurances" or "Academic Integrity" form.
-This page may be printed text, a scanned image of a physical form, or a photographed document.
-Look for: the title "Statement of Assurances", signature lines, assurance checkboxes, or any official DECA integrity agreement.
-Always note that physical/digital signatures must be manually verified regardless of what you find.
+This page may appear as printed text, a scanned image of a physical form, or a photographed document.
+
+Step 1: Determine if the SOA page exists at all (look for the title, checkboxes, and signature lines).
+Step 2: If the page exists, look closely at the signature line(s). Is there a handwritten signature, typed name, or digital signature present — or are the signature lines blank/empty?
+
+Set soa_status to exactly one of:
+- "signed"           — SOA page found AND a signature is visibly present
+- "unsigned"         — SOA page found BUT the signature line is blank or empty
+- "not_found"        — No SOA page found anywhere in the provided pages
+- "cannot_determine" — A possible SOA page was found but the signature area is unclear or illegible
 
 Return ONLY valid JSON:
-{{"soa_found": true or false, "soa_note": "what you found or did not find — note signature verification is required", "appearance_score": 0, "appearance_feedback": ""}}"""
+{{"soa_status": "signed|unsigned|not_found|cannot_determine", "soa_note": "describe exactly what you found and whether a signature was present", "appearance_score": 0, "appearance_feedback": ""}}"""
 
 VISION_SCHEMA = {
     "type": "object",
     "properties": {
-        "soa_found": {"type": "boolean"},
+        "soa_status": {
+            "type": "string",
+            "enum": ["signed", "unsigned", "not_found", "cannot_determine"],
+        },
         "soa_note": {"type": "string"},
         "appearance_score": {"type": "integer"},
         "appearance_feedback": {"type": "string"},
     },
-    "required": ["soa_found", "soa_note", "appearance_score", "appearance_feedback"],
+    "required": ["soa_status", "soa_note", "appearance_score", "appearance_feedback"],
     "additionalProperties": False,
 }
 
@@ -296,9 +313,16 @@ def grade_report(db: Session, job_id: str) -> None:
             vision_result = call_vision_check(job.file_path, page_count, appearance_section)
 
             # Override SOA penalty status (vision sees image-only pages that text extraction misses)
+            soa_status = vision_result["soa_status"]
+            soa_penalty_map = {
+                "signed":           "clear",
+                "unsigned":         "flagged",
+                "not_found":        "flagged",
+                "cannot_determine": "manual_check",
+            }
             for penalty in result.get("penalties", []):
                 if "statement of assurances" in penalty.get("description", "").lower():
-                    penalty["status"] = "clear" if vision_result["soa_found"] else "flagged"
+                    penalty["status"] = soa_penalty_map.get(soa_status, "manual_check")
                     penalty["note"] = vision_result["soa_note"]
                     break
 
