@@ -35,14 +35,21 @@ RUBRIC:
 {rubric_json}
 
 SCORING CALIBRATION (expressed as % of total possible points):
-- 90–100%: Near-perfect. The project unmistakably fulfills this specific event's purpose AND demonstrates exceptional mastery across all sections. Reserve this for top qualifier-level entries only.
-- 75–89%: Strong competitive entry. The project clearly addresses this event's requirements with competent execution. Only minor gaps or weak spots.
-- 60–74%: Average entry. The right type of project, correct event alignment, but execution has noticeable gaps — shallow analysis, missing required elements, or surface-level depth in multiple sections.
-- 45–59%: Below average. Correct event type but significant deficiencies — either large portions of the rubric are underdeveloped, or several sections miss the mark entirely.
-- 25–44%: Poor alignment. The project type is questionable or the execution fails to address this event's core requirements across most sections.
-- 0–24%: Wrong event or near-empty submission.
+- 90–100%: Exceptional. Every section demonstrates genuine depth, real data, and mastery of the event's requirements. State-qualifier level only.
+- 75–89%: Competitive. Strong execution with only minor gaps. The student clearly understands what this event demands.
+- 55–74%: Developing. Correct event type and intent, but the work is surface-level — vague claims, thin analysis, missing data, or incomplete sections. This is where most average high school entries belong.
+- 35–54%: Weak. Major deficiencies: large sections are underdeveloped, critical required elements are missing, or the analysis lacks substance throughout.
+- 0–34%: Failing. Wrong event type, near-empty, or the report fails to meaningfully address what this event requires.
 
-IMPORTANT: Most high school competitive entries should fall in the 55–75% range. Do not anchor to extremes unless the evidence clearly demands it. When evidence is mixed, score in the middle tier that best fits — do not round up to "strong" or down to "poor" without clear justification.
+GRADING PHILOSOPHY — read this before scoring:
+The purpose of this evaluation is to give students honest, actionable feedback so they can improve before competition — not to validate their effort. A report that exists but is vague, thin, or unsupported should score low.
+
+Apply these standards strictly:
+- Mentioning a concept is not the same as analyzing it. Vague statements without evidence, data, or real reasoning earn no credit.
+- Every claim needs support. Assertions without research, market data, financials, or logical justification score in the bottom of their tier.
+- Shallow sections drag the whole report down. A section that covers all headings at a surface level earns "Below Expectations" — not "Meets Expectations."
+- When evidence is mixed or thin, score in the lower tier. The burden of proof is on the report, not the judge.
+- A report that is well-written but lacks substance should score 45–60%. Good writing does not compensate for missing analysis.
 
 PENALTY CHECKLIST:
 After grading all rubric sections, evaluate each official DECA written entry requirement below.
@@ -65,9 +72,9 @@ VISUAL EVALUATION NOTE:
 If this rubric includes an "Appearance and Word Usage" section, use your ability to see the actual document to assess it accurately. Evaluate: professional formatting and consistent styling, quality and clarity of any charts or tables, effective use of white space, visual hierarchy, and overall neatness and presentation. Do not guess based on text alone — assess what you can actually see in the PDF.
 
 Grade each section independently. For each section:
-1. Determine whether the content actually serves this specific event's purpose — not just whether the section exists or is well-written
-2. Assign a score based on both event alignment and quality of execution; a section that doesn't serve this event's purpose scores in the lower tier regardless of writing quality
-3. Provide specific feedback explaining what was and wasn't fulfilled, and why the score was assigned
+1. Determine whether the content actually serves this specific event's purpose — not just whether the section exists or sounds professional
+2. Score based on substance, not effort. A section that is present but thin, vague, or unsupported should score in the bottom half of its range. Credit is for demonstrated understanding, not for attempting.
+3. Write feedback that is specific and critical. Name exactly what is missing, what is too vague, and what would need to change to earn a higher score. Do not soften negative feedback.
 
 Return ONLY valid JSON matching the required schema. Do not add commentary outside the JSON structure."""
 
