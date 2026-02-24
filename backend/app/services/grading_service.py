@@ -35,12 +35,14 @@ RUBRIC:
 {rubric_json}
 
 SCORING CALIBRATION (expressed as % of total possible points):
-- 95–100%: Near-perfect. The project unmistakably fulfills this specific event's purpose AND demonstrates exceptional mastery across all sections. Reserve this for qualifier-level entries only.
-- 80–90%: Solid competitive entry. The project clearly addresses this event's requirements and demonstrates competent execution. Minor gaps only.
-- 65–75%: Weak — either the project partially matches this event's requirements, or it is the right event type but executed at a surface level without real depth or analysis.
-- 35–45%: The project clearly addresses a fundamentally different type of project than this event requires. Even if well-written, it does not fulfill this event's purpose.
+- 90–100%: Near-perfect. The project unmistakably fulfills this specific event's purpose AND demonstrates exceptional mastery across all sections. Reserve this for top qualifier-level entries only.
+- 75–89%: Strong competitive entry. The project clearly addresses this event's requirements with competent execution. Only minor gaps or weak spots.
+- 60–74%: Average entry. The right type of project, correct event alignment, but execution has noticeable gaps — shallow analysis, missing required elements, or surface-level depth in multiple sections.
+- 45–59%: Below average. Correct event type but significant deficiencies — either large portions of the rubric are underdeveloped, or several sections miss the mark entirely.
+- 25–44%: Poor alignment. The project type is questionable or the execution fails to address this event's core requirements across most sections.
+- 0–24%: Wrong event or near-empty submission.
 
-High scores require both: (1) genuine fulfillment of this specific event's purpose, and (2) demonstrated mastery of the required concepts. Attempting to address something is not the same as mastering it.
+IMPORTANT: Most high school competitive entries should fall in the 55–75% range. Do not anchor to extremes unless the evidence clearly demands it. When evidence is mixed, score in the middle tier that best fits — do not round up to "strong" or down to "poor" without clear justification.
 
 PENALTY CHECKLIST:
 After grading all rubric sections, evaluate each official DECA written entry requirement below.
