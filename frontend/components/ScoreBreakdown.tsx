@@ -184,11 +184,22 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
             Overall Feedback
           </h3>
           <div className="space-y-4">
-            {result.overall_feedback.split("\n\n").map((para, i) => (
-              <p key={i} className="text-slate-300 text-base leading-relaxed">
-                {para}
-              </p>
-            ))}
+            {result.overall_feedback.split("\n\n").map((para, i) => {
+              const visualPrefix = "Visual Assessment: ";
+              if (para.startsWith(visualPrefix)) {
+                return (
+                  <p key={i} className="text-slate-300 text-base leading-relaxed">
+                    <span className="font-semibold text-[#E2E8F0]">Visual Assessment: </span>
+                    {para.slice(visualPrefix.length)}
+                  </p>
+                );
+              }
+              return (
+                <p key={i} className="text-slate-300 text-base leading-relaxed">
+                  {para}
+                </p>
+              );
+            })}
           </div>
         </div>
       )}
