@@ -2,8 +2,17 @@ import { ClusterEvents, JobStatus, UploadResponse } from "@/types/grading";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+// Render free-tier cold starts can take 30–60 s — use a generous timeout for event loading.
+function fetchWithTimeout(input: string, options?: RequestInit, timeoutMs = 90000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(input, { ...options, signal: controller.signal }).finally(() =>
+    clearTimeout(id)
+  );
+}
+
 export async function getEvents(): Promise<ClusterEvents[]> {
-  const res = await fetch(`${API_URL}/api/events`);
+  const res = await fetchWithTimeout(`${API_URL}/api/events`);
   if (!res.ok) throw new Error("Failed to fetch events");
   return res.json();
 }

@@ -61,6 +61,12 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def health_check():
+    """Simple health check — confirms the server is up without hitting the DB."""
+    return {"status": "ok"}
+
+
 def run_grading(job_id: str) -> None:
     """Background task wrapper that creates its own DB session."""
     db = SessionLocal()
