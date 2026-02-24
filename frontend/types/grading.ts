@@ -33,6 +33,7 @@ export interface GradingResult {
   penalties?: PenaltyCheck[];
   was_truncated?: boolean;
   truncated_at_tokens?: number;
+  graded_by?: string;
 }
 
 export interface JobStatus {

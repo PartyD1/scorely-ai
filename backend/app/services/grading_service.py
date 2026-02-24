@@ -233,6 +233,7 @@ def grade_report(db: Session, job_id: str) -> None:
         # Gemini reads the full document natively — no truncation ever occurs
         result["was_truncated"] = False
         result["truncated_at_tokens"] = None
+        result["graded_by"] = "gemini"
 
         # Validate with Pydantic
         grading_result = GradingResult(**result)
