@@ -82,7 +82,6 @@ Grading is fully async. Uploading a report returns a job ID immediately; the fro
 - **Token safety** — documents truncated to 25,000 tokens if needed, with a user-visible warning
 - **Auto file cleanup** — uploaded PDFs deleted immediately after grading completes
 - **Rubric management CLI** — add or update event rubrics without touching code
-- **Cold-start resilience** — polling timeout accounts for free-tier server wake-up delays
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
