@@ -33,7 +33,7 @@
     <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#supported-events">Supported Events</a></li>
-    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#built-with">Built With</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#api-reference">API Reference</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
@@ -106,18 +106,17 @@ Business Solutions · Career Development · Community Awareness · Community Giv
 ---
 
 <!-- TECH STACK -->
-## Tech Stack
+## Built With
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | Next.js (App Router), TypeScript, TailwindCSS |
-| **Backend** | FastAPI (Python), async background tasks |
-| **Database** | PostgreSQL, SQLAlchemy ORM, Alembic migrations |
-| **PDF Processing** | PyMuPDF (fitz) — text extraction + page rendering |
-| **LLM** | OpenAI API — gpt-4o-mini, temperature 0.2, structured outputs + vision |
-| **Token Counting** | tiktoken |
-| **Validation** | Pydantic (backend), TypeScript strict mode (frontend) |
-| **Deployment** | Vercel (frontend) + Render (backend) |
+* [![Next.js][Next.js-badge]][Next-url]
+* [![TypeScript][TypeScript-badge]][TypeScript-url]
+* [![TailwindCSS][Tailwind-badge]][Tailwind-url]
+* [![FastAPI][FastAPI-badge]][FastAPI-url]
+* [![Python][Python-badge]][Python-url]
+* [![PostgreSQL][PostgreSQL-badge]][PostgreSQL-url]
+* [![OpenAI][OpenAI-badge]][OpenAI-url]
+* [![Vercel][Vercel-badge]][Vercel-url]
+* [![Render][Render-badge]][Render-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -397,3 +396,22 @@ Special thanks to my former advisor for preparing me with the knowledge to tackl
 [linkedin-url]: https://www.linkedin.com/in/parthmdoshi/
 [github-shield]: https://img.shields.io/badge/-GitHub-black.svg?style=for-the-badge&logo=github&colorB=555
 [github-url]: https://github.com/PartyD1
+
+[Next.js-badge]: https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[TypeScript-badge]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[Tailwind-badge]: https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white
+[Tailwind-url]: https://tailwindcss.com/
+[FastAPI-badge]: https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white
+[FastAPI-url]: https://fastapi.tiangolo.com/
+[Python-badge]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python-url]: https://www.python.org/
+[PostgreSQL-badge]: https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white
+[PostgreSQL-url]: https://www.postgresql.org/
+[OpenAI-badge]: https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white
+[OpenAI-url]: https://platform.openai.com/
+[Vercel-badge]: https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white
+[Vercel-url]: https://vercel.com/
+[Render-badge]: https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black
+[Render-url]: https://render.com/
