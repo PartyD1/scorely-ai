@@ -99,7 +99,7 @@ Business Services · Buying & Merchandising · Finance · Hospitality & Tourism 
 Business Growth · Franchise Business · Independent Business · International Business
 
 ### Project Management
-Business Solutions · Career Development · Community Awareness · Community Giving · Financial Literacy · Sales Project
+Business Solutions · Career Development · Community Awareness · Community Giving · Financial Literacy · Sales
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
