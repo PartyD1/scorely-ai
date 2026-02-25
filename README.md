@@ -108,15 +108,15 @@ Business Solutions · Career Development · Community Awareness · Community Giv
 <!-- TECH STACK -->
 ## Built With
 
-* [![Next.js][Next.js-badge]][Next-url]
-* [![TypeScript][TypeScript-badge]][TypeScript-url]
-* [![TailwindCSS][Tailwind-badge]][Tailwind-url]
-* [![FastAPI][FastAPI-badge]][FastAPI-url]
-* [![Python][Python-badge]][Python-url]
-* [![PostgreSQL][PostgreSQL-badge]][PostgreSQL-url]
-* [![OpenAI][OpenAI-badge]][OpenAI-url]
-* [![Vercel][Vercel-badge]][Vercel-url]
-* [![Render][Render-badge]][Render-url]
+[![Next.js][Next.js-badge]][Next-url]
+[![TypeScript][TypeScript-badge]][TypeScript-url]
+[![TailwindCSS][Tailwind-badge]][Tailwind-url]
+[![FastAPI][FastAPI-badge]][FastAPI-url]
+[![Python][Python-badge]][Python-url]
+[![PostgreSQL][PostgreSQL-badge]][PostgreSQL-url]
+[![OpenAI][OpenAI-badge]][OpenAI-url]
+[![Vercel][Vercel-badge]][Vercel-url]
+[![Render][Render-badge]][Render-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
