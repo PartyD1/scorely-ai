@@ -93,13 +93,13 @@ Grading is fully async. Uploading a report returns a job ID immediately; the fro
 ## Supported Events
 
 ### Business Operations Research
-BOR · FOR · HTOR · BMOR · SEOR
+Business Services · Buying & Merchandising · Finance · Hospitality & Tourism · Sports & Entertainment
 
 ### Entrepreneurship
-EBG · EFB · EIB · IBP
+Business Growth · Franchise Business · Independent Business · International Business
 
 ### Project Management
-PMBS · PMCD · PMCA · PMCG · PMFL · PMSP
+Business Solutions · Career Development · Community Awareness · Community Giving · Financial Literacy · Sales Project
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
