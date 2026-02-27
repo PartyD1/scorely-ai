@@ -10,8 +10,10 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost:5432/rubric_db")
 
-# Use psycopg (v3) driver — swap postgresql:// to postgresql+psycopg://
-db_url = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+# Use psycopg (v3) driver — normalize both postgres:// and postgresql:// (Heroku uses postgres://)
+db_url = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+if not db_url.startswith("postgresql+psycopg://"):
+    db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
 # Neon (and other managed Postgres providers) require SSL on all remote connections
 _connect_args = {}
