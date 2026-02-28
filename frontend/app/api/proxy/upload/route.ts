@@ -1,22 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { getInternalAuthHeader } from "@/lib/internal-token";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function POST(req: NextRequest) {
-  // getToken with raw:true returns the signed JWT string FastAPI can verify
-  const rawToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, raw: true });
-
-  const headers: Record<string, string> = {};
-  if (rawToken) {
-    headers["Authorization"] = `Bearer ${rawToken}`;
-  }
-
+  const authHeader = await getInternalAuthHeader(req);
   const formData = await req.formData();
 
   const res = await fetch(`${API_URL}/api/upload`, {
     method: "POST",
-    headers,
+    headers: authHeader,
     body: formData,
   });
 

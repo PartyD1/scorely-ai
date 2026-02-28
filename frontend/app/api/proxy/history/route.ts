@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { getInternalAuthHeader } from "@/lib/internal-token";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function GET(req: NextRequest) {
-  const rawToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, raw: true });
-
-  if (!rawToken) {
+  const authHeader = await getInternalAuthHeader(req);
+  if (!authHeader.Authorization) {
     return NextResponse.json([], { status: 200 });
   }
 
@@ -17,7 +16,7 @@ export async function GET(req: NextRequest) {
 
   const res = await fetch(
     `${API_URL}/api/history?event_code=${encodeURIComponent(eventCode)}`,
-    { headers: { Authorization: `Bearer ${rawToken}` } }
+    { headers: authHeader }
   );
 
   const data = await res.json();
