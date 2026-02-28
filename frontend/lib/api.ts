@@ -2,7 +2,7 @@ import { ClusterEvents, JobStatus, UploadResponse } from "@/types/grading";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-// Render free-tier cold starts can take 30–60 s — use a generous timeout for event loading.
+// Use a generous timeout for event loading in case of cold starts.
 function fetchWithTimeout(input: string, options?: RequestInit, timeoutMs = 90000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
