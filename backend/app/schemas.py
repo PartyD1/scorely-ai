@@ -22,6 +22,7 @@ class SectionScore(BaseModel):
     max_points: int
     awarded_points: int
     feedback: str
+    improvement: Optional[str] = None
 
 
 class PenaltyCheck(BaseModel):

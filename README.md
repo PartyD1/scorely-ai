@@ -309,6 +309,7 @@ Project: [https://github.com/PartyD1/scorely-ai](https://github.com/PartyD1/scor
 Special thanks to the following people who shared their DECA written reports for testing:
 
 - Devansh Daxini
+- Bhavya Mehta
 - Kaviya Muthukumaravel
 - Maskeen Singh Saini
 - Pranav Sathianathan

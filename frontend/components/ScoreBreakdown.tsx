@@ -87,6 +87,16 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
           <p className="text-slate-300 text-base leading-relaxed">
             {section.feedback}
           </p>
+          {section.improvement && section.awarded_points < section.max_points && (
+            <div className="mt-4 p-4 rounded-md bg-[#0073C1]/10 border border-[#0073C1]/30">
+              <p className="text-xs font-semibold text-[#60A5FA] uppercase tracking-widest mb-2">
+                How to improve
+              </p>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                {section.improvement}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
