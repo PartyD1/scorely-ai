@@ -17,8 +17,11 @@ from app.models import Job, Rubric  # noqa: F401 - import to register models
 config = context.config
 
 # Override sqlalchemy.url from environment, using psycopg v3 driver
+# Normalize both postgres:// (Heroku) and postgresql:// to postgresql+psycopg://
 _raw_url = os.getenv("DATABASE_URL", "postgresql://localhost:5432/rubric_db")
-_db_url = _raw_url.replace("postgresql://", "postgresql+psycopg://", 1)
+_db_url = _raw_url.replace("postgres://", "postgresql+psycopg://", 1)
+if not _db_url.startswith("postgresql+psycopg://"):
+    _db_url = _db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 config.set_main_option("sqlalchemy.url", _db_url)
 
 if config.config_file_name is not None:
