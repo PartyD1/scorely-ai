@@ -1,4 +1,5 @@
-import { ClusterEvents, JobStatus, UploadResponse } from "@/types/grading";
+import { ClusterEvents, HistoryItem, JobStatus, UploadResponse } from "@/types/grading";
+import { getAuthHeader } from "./auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -27,6 +28,7 @@ export async function uploadPdf(
 
   const res = await fetch(`${API_URL}/api/upload`, {
     method: "POST",
+    headers: getAuthHeader(),
     body: formData,
   });
 
@@ -41,5 +43,34 @@ export async function uploadPdf(
 export async function getJobStatus(jobId: string): Promise<JobStatus> {
   const res = await fetch(`${API_URL}/api/status/${jobId}`);
   if (!res.ok) throw new Error("Failed to fetch job status");
+  return res.json();
+}
+
+export async function getHistory(eventCode: string): Promise<HistoryItem[]> {
+  const res = await fetch(`${API_URL}/api/history?event_code=${encodeURIComponent(eventCode)}`, {
+    headers: getAuthHeader(),
+  });
+  if (res.status === 401) return [];
+  if (!res.ok) throw new Error("Failed to fetch history");
+  return res.json();
+}
+
+export async function getAdminStats() {
+  const res = await fetch(`${API_URL}/api/admin/stats`, { headers: getAuthHeader() });
+  if (!res.ok) throw new Error("Failed to fetch admin stats");
+  return res.json();
+}
+
+export async function getAdminUsers() {
+  const res = await fetch(`${API_URL}/api/admin/users`, { headers: getAuthHeader() });
+  if (!res.ok) throw new Error("Failed to fetch admin users");
+  return res.json();
+}
+
+export async function getAdminUserSubmissions(userId: string) {
+  const res = await fetch(`${API_URL}/api/admin/users/${userId}/submissions`, {
+    headers: getAuthHeader(),
+  });
+  if (!res.ok) throw new Error("Failed to fetch user submissions");
   return res.json();
 }

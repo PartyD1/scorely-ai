@@ -42,8 +42,18 @@ export interface JobStatus {
   status: "pending" | "processing" | "complete" | "failed";
   result: GradingResult | null;
   error: string | null;
+  event_code?: string | null;
 }
 
 export interface UploadResponse {
   job_id: string;
+}
+
+export interface HistoryItem {
+  job_id: string;
+  event_name: string;
+  event_code: string | null;
+  total_awarded: number;
+  total_possible: number;
+  created_at: string;
 }
