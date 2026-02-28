@@ -12,10 +12,10 @@
 <h1 align="center">ScorelyAI</h1>
 
   <p align="center">
-    AI-powered rubric grading for competitive DECA written reports.
+    Upload your DECA written report. Get judge-level feedback in seconds.
     <br />
     <br />
-    <a href="https://scorely-ai.vercel.app/">View Live Demo</a>
+    <a href="https://scorelyai.app/">View Live Demo</a>
     &middot;
     <a href="https://github.com/PartyD1/scorely-ai/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
@@ -36,15 +36,7 @@
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#api-reference">API Reference</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
-    <li>
-      <a href="#installation--setup">Installation & Setup</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#backend">Backend</a></li>
-        <li><a href="#frontend">Frontend</a></li>
-        <li><a href="#running-locally">Running Locally</a></li>
-      </ul>
-    </li>
+    <li><a href="#running-locally">Running Locally</a></li>
     <li><a href="#adding-new-rubrics">Adding New Rubrics</a></li>
     <li><a href="#troubleshooting">Troubleshooting</a></li>
     <li><a href="#license">License</a></li>
@@ -58,13 +50,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About the Project
 
-ScorelyAI is a web application that grades competitive DECA written reports using AI. Upload your PDF, select your event, and receive a detailed, section-by-section score breakdown with specific, actionable feedback — all graded against the official DECA rubric for your event.
+ScorelyAI grades competitive DECA written reports using AI. Upload a PDF, pick your event, and get a section-by-section score breakdown with feedback based on the official rubric for that event.
 
-The system supports **16 events across 3 clusters**, uses **GPT-4o-mini** for structured rubric-based text grading, and runs a **vision check** on rendered PDF pages to detect Statement of Assurances signatures and evaluate visual presentation — catching things that pure text extraction misses.
+It covers **16 events across 3 clusters**, uses **GPT-4o-mini** for text grading, and runs a **vision check** on key PDF pages to catch things plain text extraction misses (Statement of Assurances signatures, visual presentation).
 
-Grading is fully async. Uploading a report returns a job ID immediately; the frontend polls for results and displays them as soon as they're ready.
+Grading is async. Upload returns a job ID right away; the frontend polls for results and shows them when they're ready.
 
-**Live demo:** [https://scorely-ai.vercel.app/](https://scorely-ai.vercel.app/)
+**Live:** [https://scorelyai.app](https://scorelyai.app)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -73,15 +65,15 @@ Grading is fully async. Uploading a report returns a job ID immediately; the fro
 <!-- FEATURES -->
 ## Features
 
-- **Event-aware grading** — two-level hierarchy (cluster → specific event) with tailored prompts per event
-- **Vision check** — key PDF pages are rendered and sent to GPT-4o-mini vision to detect Statement of Assurances signatures and assess visual presentation
-- **Required outline enforcement** — official DECA document structure injected into the prompt so the LLM penalizes missing sections
-- **Structured output** — JSON schema-validated grading results via OpenAI structured outputs
-- **Section-level feedback** — scores and actionable comments for every rubric section, with color-coded progress bars (green ≥80%, yellow 60–80%, red <60%)
-- **Penalty flagging** — explicit flags for Statement of Assurances compliance and required outline adherence
-- **Token safety** — documents truncated to 25,000 tokens if needed, with a user-visible warning
-- **Auto file cleanup** — uploaded PDFs deleted immediately after grading completes
-- **Rubric management CLI** — add or update event rubrics without touching code
+- **Event-aware grading:** two-level cluster/event hierarchy with tailored prompts per event
+- **Vision check:** key PDF pages are rendered and sent to GPT-4o-mini vision for SOA signature detection and visual presentation scoring
+- **Required outline enforcement:** official DECA document structure is injected into the prompt so missing sections get penalized
+- **Structured output:** schema-validated JSON grading results via OpenAI structured outputs
+- **Section-level feedback:** scores and comments for every rubric section, with color-coded progress bars (green >=80%, yellow 60-80%, red <60%)
+- **Penalty flagging:** explicit flags for SOA compliance and required outline adherence
+- **Token safety:** documents over 25,000 tokens get truncated with a visible warning to the user
+- **Auto file cleanup:** uploaded PDFs are deleted as soon as grading finishes
+- **Rubric management CLI:** add or update event rubrics without touching any code
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,11 +116,11 @@ Business Solutions · Career Development · Community Awareness · Community Giv
 ## How It Works
 
 ```
-Upload PDF  →  Extract Text  →  Resolve Rubric + Outline  →  LLM Text Grading  →  Vision Check  →  Score + Feedback
+Upload PDF  ->  Extract Text  ->  Resolve Rubric + Outline  ->  LLM Text Grading  ->  Vision Check  ->  Score + Feedback
 ```
 
 1. User uploads a PDF and selects the event from a two-level dropdown
-2. Backend validates the file (≤ 25 pages, ≤ 15MB, PDF only) and queues a grading job
+2. Backend validates the file (<= 25 pages, <= 15MB, PDF only) and queues a grading job
 3. Text is extracted via PyMuPDF and truncated to 25,000 tokens if needed
 4. The event rubric and official required outline are loaded and injected into the prompt
 5. OpenAI returns a schema-validated JSON response with per-section scores and feedback
@@ -196,96 +188,44 @@ scorely-ai/
 ---
 
 <!-- INSTALLATION -->
-## Installation & Setup
+## Running Locally
 
-### Prerequisites
+**Prerequisites:** Python 3.10+, Node.js 18+, PostgreSQL 16, OpenAI API key
 
-- Python 3.10+
-- Node.js 18+
-- PostgreSQL 16 (`brew install postgresql@16` on macOS) or a [Neon](https://neon.tech) cloud database
-- OpenAI API key — [platform.openai.com](https://platform.openai.com)
-
-### Backend
-
-**1. Create and activate a virtual environment**
 ```
-cd backend
-```
-```
-python -m venv venv
-```
-```
-source venv/bin/activate
+git clone https://github.com/PartyD1/scorely-ai.git
+cd scorely-ai
 ```
 
-**2. Install dependencies**
+**Backend**
+```
+cd backend && python -m venv venv && source venv/bin/activate
+```
 ```
 pip install -r requirements.txt
 ```
-
-**3. Configure environment**
 ```
-cp .env.example .env
-```
-Edit `.env` with your values:
-```
-DATABASE_URL=postgresql://yourusername@localhost:5432/rubric_db
-OPENAI_API_KEY=sk-...
-UPLOAD_DIR=./uploads
-MAX_FILE_SIZE_MB=15
-MAX_PAGES=23
-```
-
-**4. Create the database and run migrations**
-```
-createdb rubric_db
+cp .env.example .env   # fill in DATABASE_URL and OPENAI_API_KEY
 ```
 ```
-alembic upgrade head
-```
-
-Rubrics auto-seed on first startup — no manual seeding required.
-
-### Frontend
-
-**1. Install dependencies**
-```
-cd frontend
-```
-```
-npm install
-```
-
-**2. Configure environment**
-```
-cp .env.example .env.local
-```
-Set `NEXT_PUBLIC_API_URL=http://localhost:8000` in `.env.local`.
-
-### Running Locally
-
-Open two terminals:
-
-**Terminal 1 — Backend**
-```
-cd backend
-```
-```
-source venv/bin/activate
+createdb rubric_db && alembic upgrade head
 ```
 ```
 uvicorn app.main:app --reload --port 8000
 ```
 
-**Terminal 2 — Frontend**
+**Frontend** (separate terminal)
 ```
-cd frontend
+cd frontend && npm install
+```
+```
+cp .env.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 ```
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000). Rubrics auto-seed on first startup.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -343,7 +283,7 @@ rm -rf frontend/.next
 <!-- LICENSE -->
 ## License
 
-Private repository — not licensed for external use.
+Private repository, not licensed for external use.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -366,15 +306,15 @@ Project: [https://github.com/PartyD1/scorely-ai](https://github.com/PartyD1/scor
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Special thanks to the following people who generously shared their DECA written reports for use as training and testing data:
+Special thanks to the following people who shared their DECA written reports for testing:
 
 - Devansh Daxini
 - Kaviya Muthukumaravel
 - Maskeen Singh Saini
 - Pranav Sathianathan
 - Rishi Ranga
- 
-Special thanks to my former advisor for preparing me with the knowledge to tackle a project of this scale: Mr. Wu
+
+And to Mr. Wu, my former advisor, for the foundation that made this project possible.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
