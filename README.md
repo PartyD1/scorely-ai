@@ -114,7 +114,7 @@ Business Solutions · Career Development · Community Awareness · Community Giv
 [![PostgreSQL][PostgreSQL-badge]][PostgreSQL-url]
 [![OpenAI][OpenAI-badge]][OpenAI-url]
 [![Vercel][Vercel-badge]][Vercel-url]
-[![Render][Render-badge]][Render-url]
+[![Heroku][Heroku-badge]][Heroku-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -188,7 +188,7 @@ scorely-ai/
 │   └── scripts/
 │       └── add_rubric.py             # CLI to seed or create rubrics
 │
-└── render.yaml                       # Render IaC deployment config
+└── Procfile                          # Heroku process configuration
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -411,5 +411,5 @@ Special thanks to my former advisor for preparing me with the knowledge to tackl
 [OpenAI-url]: https://platform.openai.com/
 [Vercel-badge]: https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white
 [Vercel-url]: https://vercel.com/
-[Render-badge]: https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black
-[Render-url]: https://render.com/
+[Heroku-badge]: https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white
+[Heroku-url]: https://www.heroku.com/
