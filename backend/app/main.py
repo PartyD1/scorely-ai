@@ -51,9 +51,11 @@ _origins = [
     "http://localhost:3000",
     "http://localhost:3001",
 ]
-_frontend_url = os.getenv("FRONTEND_URL", "").strip()
-if _frontend_url:
-    _origins.append(_frontend_url)
+# FRONTEND_URL supports comma-separated values, e.g. "https://scorely.ai,https://scorely-ai.vercel.app"
+for _url in os.getenv("FRONTEND_URL", "").split(","):
+    _url = _url.strip()
+    if _url:
+        _origins.append(_url)
 
 app.add_middleware(
     CORSMiddleware,
