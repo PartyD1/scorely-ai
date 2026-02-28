@@ -15,6 +15,7 @@ export interface SectionScore {
   max_points: number;
   awarded_points: number;
   feedback: string;
+  improvement?: string;
 }
 
 export interface PenaltyCheck {

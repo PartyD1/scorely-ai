@@ -69,6 +69,7 @@ Grade each section independently. For each section:
 1. Determine whether the content actually serves this specific event's purpose — not just whether the section exists or is well-written
 2. Assign a score based on both event alignment and quality of execution; a section that doesn't serve this event's purpose scores in the lower tier regardless of writing quality
 3. Provide specific feedback explaining what was and wasn't fulfilled, and why the score was assigned
+4. Provide a concise "improvement" field: 1–3 sentences of specific, actionable guidance on what the student should add, rewrite, or emphasize to earn more points. Be concrete — reference the rubric criteria, suggest specific content, and indicate roughly how many points it could recover. Leave this field empty only if the section earned full marks.
 
 Return ONLY valid JSON matching the required schema. Do not add commentary outside the JSON structure."""
 
@@ -87,8 +88,9 @@ GRADING_SCHEMA = {
                     "max_points": {"type": "integer"},
                     "awarded_points": {"type": "integer"},
                     "feedback": {"type": "string"},
+                    "improvement": {"type": "string"},
                 },
-                "required": ["name", "max_points", "awarded_points", "feedback"],
+                "required": ["name", "max_points", "awarded_points", "feedback", "improvement"],
                 "additionalProperties": False,
             },
         },
