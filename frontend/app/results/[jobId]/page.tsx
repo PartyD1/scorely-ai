@@ -77,17 +77,17 @@ export default function ResultsPage({
       {/* Top bar */}
       <header className="px-8 py-6 flex items-center justify-between">
         <ScorelyLogo />
-        {result && (
-          <div className="flex items-center gap-4">
-            <AuthButton />
+        <div className="flex items-center gap-4">
+          <AuthButton />
+          {result && (
             <Link
               href="/upload"
               className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
             >
               New Audit →
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </header>
 
       <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
