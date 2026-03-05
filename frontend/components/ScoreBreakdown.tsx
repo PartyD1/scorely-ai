@@ -133,7 +133,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
   const hasFlaggedPenalties = result.penalties?.some((p) => p.status === "flagged");
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       {/* Truncation warning banner */}
       {result.was_truncated && (
         <div className="flex items-center gap-3 bg-[#FBBF24]/10 border border-[#FBBF24]/40 rounded-md px-5 py-4">
