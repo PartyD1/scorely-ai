@@ -2,9 +2,20 @@
 
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Enum, Integer, JSON, String
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Index, Integer, JSON, String
 
 from .database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True)           # UUID
+    google_id = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    picture = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class Job(Base):
@@ -22,6 +33,7 @@ class Job(Base):
     error = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
 
 
 class Rubric(Base):

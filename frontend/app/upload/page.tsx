@@ -2,13 +2,15 @@
 
 import UploadForm from "@/components/UploadForm";
 import ScorelyLogo from "@/components/ScorelyLogo";
+import AuthButton from "@/components/AuthButton";
 
 export default function UploadPage() {
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
       {/* Top bar */}
-      <header className="px-8 py-6">
+      <header className="px-8 py-6 flex items-center justify-between">
         <ScorelyLogo />
+        <AuthButton />
       </header>
 
       {/* Content */}

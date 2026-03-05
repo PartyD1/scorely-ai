@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
 import AuditProgress from "@/components/AuditProgress";
+import AuthButton from "@/components/AuthButton";
+import HistorySidebar from "@/components/HistorySidebar";
 import ScoreBreakdown from "@/components/ScoreBreakdown";
 import ScorelyLogo from "@/components/ScorelyLogo";
 
@@ -19,6 +21,7 @@ export default function ResultsPage({
   const { jobId } = use(params);
   const [status, setStatus] = useState<string>("pending");
   const [result, setResult] = useState<GradingResult | null>(null);
+  const [eventCode, setEventCode] = useState<string | null>(null);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,6 +37,7 @@ export default function ResultsPage({
         if (data.status === "complete" && data.result) {
           clearInterval(interval);
           setCompleting(true);
+          setEventCode(data.event_code ?? null);
           setTimeout(() => setResult(data.result), 900);
           return;
         }
@@ -73,14 +77,17 @@ export default function ResultsPage({
       {/* Top bar */}
       <header className="px-8 py-6 flex items-center justify-between">
         <ScorelyLogo />
-        {result && (
-          <Link
-            href="/upload"
-            className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-          >
-            New Audit →
-          </Link>
-        )}
+        <div className="flex items-center gap-4">
+          <AuthButton />
+          {result && (
+            <Link
+              href="/upload"
+              className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+            >
+              New Audit →
+            </Link>
+          )}
+        </div>
       </header>
 
       <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
@@ -109,8 +116,17 @@ export default function ResultsPage({
           </div>
         )}
 
-        {/* Results */}
-        {result && <ScoreBreakdown result={result} />}
+        {/* Results with history sidebar */}
+        {result && (
+          <div className="flex flex-col lg:flex-row gap-6 w-full items-start">
+            <div className="flex-1 min-w-0">
+              <ScoreBreakdown result={result} />
+            </div>
+            {eventCode && (
+              <HistorySidebar currentJobId={jobId} eventCode={eventCode} />
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

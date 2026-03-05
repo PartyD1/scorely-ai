@@ -11,9 +11,11 @@ from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+from .auth import get_optional_user
 from .database import SessionLocal, get_db
 from .events_data import CLUSTERS, get_cluster_for_code, get_rubric_name_for_code
-from .models import Job
+from .models import Job, User
+from .routers import admin, history
 from .schemas import ClusterEvents, EventInfo, JobResponse, RubricCreate, UploadResponse
 from .services import grading_service, pdf_service, rubric_service
 
@@ -46,6 +48,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="AI Rubric Evaluator", lifespan=lifespan)
+app.include_router(history.router)
+app.include_router(admin.router)
 
 _origins = [
     "http://localhost:3000",
@@ -87,6 +91,7 @@ async def upload_pdf(
     file: UploadFile = File(...),
     event_code: str = Form(...),
     db: Session = Depends(get_db),
+    user: User | None = Depends(get_optional_user),
 ):
     """Upload a PDF for grading. Returns a job_id to poll for results."""
     # Validate file type
@@ -128,6 +133,7 @@ async def upload_pdf(
         event_code=event_code,
         file_path=file_path,
         status="pending",
+        user_id=user.id if user else None,
     )
     db.add(job)
     db.commit()
@@ -146,7 +152,7 @@ def get_job_status(job_id: str, db: Session = Depends(get_db)):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    return JobResponse(status=job.status, result=job.result, error=job.error)
+    return JobResponse(status=job.status, result=job.result, error=job.error, event_code=job.event_code)
 
 
 def _cluster_is_available(cluster: dict, available: set) -> bool:

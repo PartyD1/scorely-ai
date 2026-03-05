@@ -9,3 +9,4 @@ openai==1.57.4
 tiktoken==0.7.0
 python-multipart==0.0.12
 python-dotenv==1.0.1
+PyJWT==2.11.0
