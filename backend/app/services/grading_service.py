@@ -19,6 +19,23 @@ from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
 logger = logging.getLogger(__name__)
 
+
+def trim_user_submissions(db: Session, user_id: str, keep: int = 5) -> None:
+    """Delete all but the most recent `keep` completed jobs for a user."""
+    subq = (
+        db.query(Job.id)
+        .filter(Job.user_id == user_id, Job.status == "complete")
+        .order_by(Job.completed_at.desc())
+        .limit(keep)
+        .subquery()
+    )
+    db.query(Job).filter(
+        Job.user_id == user_id,
+        Job.status == "complete",
+        Job.id.notin_(subq),
+    ).delete(synchronize_session=False)
+    db.commit()
+
 # ---------------------------------------------------------------------------
 # Text grading prompt — GPT-4o-mini reads extracted text
 # ---------------------------------------------------------------------------
@@ -381,6 +398,9 @@ def grade_report(db: Session, job_id: str) -> None:
         job.completed_at = datetime.utcnow()
         db.commit()
         logger.info("Job %s completed successfully", job_id)
+
+        if job.user_id:
+            trim_user_submissions(db, job.user_id)
 
     except Exception as e:
         logger.error("Job %s failed: %s", job_id, e)
