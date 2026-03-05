@@ -13,7 +13,7 @@ from ..models import Job
 from ..schemas import GradingResult
 from ..utils.file_cleanup import delete_file
 from ..utils.token_counter import truncate_text
-from .pdf_service import extract_text, get_page_count, render_pages_as_images
+from .pdf_service import detect_document_structure, extract_text, get_page_count, render_pages_as_images
 from ..events_data import get_cluster_for_code, get_event_by_code
 from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
@@ -201,15 +201,20 @@ VISION_SCHEMA = {
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _compute_page_count_penalty(page_count: int) -> dict:
-    """Compute page count penalty in Python — not delegated to the LLM.
+def _compute_page_count_penalty(page_count: int, excluded_pages: list[str]) -> dict:
+    """Compute page count penalty based on pages actually detected in the document.
 
-    DECA always excludes 3 pages from the count:
-      title page + table of contents + statement of assurances = 3
-    Max allowed total: 23 pages (20 content + 3 excluded).
+    Only pages that are confirmed present (title page, TOC, SOA) are excluded.
+    Students get 20 content pages; excluded pages don't count toward that limit.
     """
-    excluded_count = 3
+    excluded_count = len(excluded_pages)
     content_pages = page_count - excluded_count
+
+    if excluded_pages:
+        excluded_str = ", ".join(excluded_pages)
+        excluded_note = f"Excluded ({excluded_count} page{'s' if excluded_count != 1 else ''}): {excluded_str}."
+    else:
+        excluded_note = "No standard excluded pages (title page, TOC, SOA) were detected."
 
     if content_pages > 20:
         over = content_pages - 20
@@ -218,10 +223,8 @@ def _compute_page_count_penalty(page_count: int) -> dict:
             "penalty_points": 5 * over,
             "status": "flagged",
             "note": (
-                f"Total pages: {page_count}. Excluded: title page, table of contents, "
-                f"statement of assurances (3 pages). "
-                f"Content pages: {page_count} − 3 = {content_pages}, "
-                f"which is {over} page(s) over the 20-page limit."
+                f"Total pages: {page_count}. {excluded_note} "
+                f"Content pages: {content_pages}, which is {over} page(s) over the 20-page limit."
             ),
         }
 
@@ -230,9 +233,8 @@ def _compute_page_count_penalty(page_count: int) -> dict:
         "penalty_points": 5,
         "status": "clear",
         "note": (
-            f"Total pages: {page_count}. Excluded: title page, table of contents, "
-            f"statement of assurances (3 pages). "
-            f"Content pages: {page_count} − 3 = {content_pages}, within the 20-page limit."
+            f"Total pages: {page_count}. {excluded_note} "
+            f"Content pages: {content_pages}, within the 20-page limit."
         ),
     }
 
@@ -273,8 +275,9 @@ def grade_report(db: Session, job_id: str) -> None:
         job.status = "processing"
         db.commit()
 
-        # Get page count before text extraction (file deleted in finally)
+        # Get page count and document structure before text extraction (file deleted in finally)
         page_count = get_page_count(job.file_path)
+        doc_structure = detect_document_structure(job.file_path)
 
         # Extract and truncate text
         text = extract_text(job.file_path)
@@ -370,8 +373,22 @@ def grade_report(db: Session, job_id: str) -> None:
                 job_id, vision_err,
             )
 
+        # Build excluded pages list from what was actually detected in this document
+        excluded_pages: list[str] = []
+        if doc_structure.get("has_title_page"):
+            excluded_pages.append("title page")
+        if doc_structure.get("has_toc"):
+            excluded_pages.append("table of contents")
+        # For SOA: prefer vision result if available, fall back to text detection
+        try:
+            soa_found = vision_result["soa_status"] in ("signed", "unsigned", "cannot_determine")
+        except NameError:
+            soa_found = doc_structure.get("has_soa", False)
+        if soa_found:
+            excluded_pages.append("statement of assurances")
+
         # Inject Python-computed page count penalty at index 1 (after SOA check)
-        page_penalty = _compute_page_count_penalty(page_count)
+        page_penalty = _compute_page_count_penalty(page_count, excluded_pages)
         penalties = result.get("penalties", [])
         penalties.insert(1, page_penalty)
         result["penalties"] = penalties
