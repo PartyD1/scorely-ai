@@ -29,6 +29,7 @@ export default function AccountPage() {
   const [confirmText, setConfirmText] = useState("");
   const [showDelete, setShowDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     if (status === "loading") return;
@@ -42,11 +43,13 @@ export default function AccountPage() {
   async function handleDelete() {
     if (confirmText !== "DELETE") return;
     setDeleting(true);
+    setDeleteError("");
     try {
       await deleteAccount();
       await signOut({ redirect: false });
       router.push("/");
-    } catch {
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : "Failed to delete account. Please try again.");
       setDeleting(false);
     }
   }
@@ -209,12 +212,15 @@ export default function AccountPage() {
                     {deleting ? "Deleting…" : "Confirm Delete"}
                   </button>
                   <button
-                    onClick={() => { setShowDelete(false); setConfirmText(""); }}
+                    onClick={() => { setShowDelete(false); setConfirmText(""); setDeleteError(""); }}
                     className="px-4 py-2 rounded-md text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors"
                   >
                     Cancel
                   </button>
                 </div>
+                {deleteError && (
+                  <p className="text-[#EF4444] text-xs mt-1">{deleteError}</p>
+                )}
               </div>
             )}
           </div>
