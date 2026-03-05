@@ -52,7 +52,9 @@
 
 ScorelyAI grades competitive DECA written reports using AI. Upload a PDF, pick your event, and get a section-by-section score breakdown with feedback based on the official rubric for that event.
 
-It covers **16 events across 3 clusters**, uses **GPT-4o-mini** for text grading, and runs a **vision check** on key PDF pages to catch things plain text extraction misses (Statement of Assurances signatures, visual presentation).
+It covers **16 events across 3 clusters**, uses an LLM for text grading, and runs a **vision check** on key PDF pages to catch things plain text extraction misses (Statement of Assurances signatures, visual presentation).
+
+Sign in with Google to save your results, track score history across submissions, and manage your account.
 
 Grading is async. Upload returns a job ID right away; the frontend polls for results and shows them when they're ready.
 
@@ -66,13 +68,17 @@ Grading is async. Upload returns a job ID right away; the frontend polls for res
 ## Features
 
 - **Event-aware grading:** two-level cluster/event hierarchy with tailored prompts per event
-- **Vision check:** key PDF pages are rendered and sent to GPT-4o-mini vision for SOA signature detection and visual presentation scoring
+- **Vision check:** key PDF pages are rendered as images for SOA signature detection and visual presentation scoring
+- **Smart page count:** title page, TOC, and SOA are only excluded from the 20-page limit if they're actually detected in the document
 - **Required outline enforcement:** official DECA document structure is injected into the prompt so missing sections get penalized
 - **Structured output:** schema-validated JSON grading results via OpenAI structured outputs
 - **Section-level feedback:** scores and comments for every rubric section, with color-coded progress bars (green >=80%, yellow 60-80%, red <60%)
 - **Penalty flagging:** explicit flags for SOA compliance and required outline adherence
+- **Google OAuth accounts:** sign in to save results, view past submissions per event, and manage your account
+- **Score history:** past submissions for the same event appear below results, capped at 5 per user to keep storage lean
 - **Token safety:** documents over 25,000 tokens get truncated with a visible warning to the user
 - **Auto file cleanup:** uploaded PDFs are deleted as soon as grading finishes
+- **Feedback:** in-app feedback form for bug reports and feature requests
 - **Rubric management CLI:** add or update event rubrics without touching any code
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -116,17 +122,19 @@ Business Solutions · Career Development · Community Awareness · Community Giv
 ## How It Works
 
 ```
-Upload PDF  ->  Extract Text  ->  Resolve Rubric + Outline  ->  LLM Text Grading  ->  Vision Check  ->  Score + Feedback
+Upload PDF  ->  Extract Text + Detect Structure  ->  Resolve Rubric + Outline  ->  LLM Text Grading  ->  Vision Check  ->  Page Count  ->  Score + Feedback
 ```
 
 1. User uploads a PDF and selects the event from a two-level dropdown
 2. Backend validates the file (<= 25 pages, <= 15MB, PDF only) and queues a grading job
-3. Text is extracted via PyMuPDF and truncated to 25,000 tokens if needed
+3. Text is extracted via PyMuPDF and truncated to 25,000 tokens if needed; document structure (title page, TOC, SOA) is detected
 4. The event rubric and official required outline are loaded and injected into the prompt
 5. OpenAI returns a schema-validated JSON response with per-section scores and feedback
-6. Key PDF pages are rendered as images and sent to GPT-4o-mini vision for SOA signature detection and visual appearance scoring
-7. Results are merged, stored in the database, and the uploaded file is deleted
-8. Frontend displays a section-by-section score breakdown with color-coded progress bars and penalty flags
+6. Key PDF pages are rendered as images for SOA signature detection and visual appearance scoring
+7. Page count penalty is computed using only the structural pages actually detected in the document
+8. Results are merged, stored in the database, and the uploaded file is deleted
+9. Authenticated users have results saved to their history (capped at 5 per event); past submissions appear below the score
+10. Frontend displays a section-by-section score breakdown with color-coded progress bars and penalty flags
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,13 +143,16 @@ Upload PDF  ->  Extract Text  ->  Resolve Rubric + Outline  ->  LLM Text Grading
 <!-- API REFERENCE -->
 ## API Reference
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/upload` | Upload PDF + select event; returns `job_id` |
-| `GET` | `/api/status/{job_id}` | Poll job status and retrieve results |
-| `GET` | `/api/events` | List available events for the dropdown |
-| `POST` | `/api/rubrics` | Create or update a rubric |
-| `GET` | `/api/rubrics/{event}` | Fetch a rubric by event name |
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/upload` | Optional | Upload PDF + select event; returns `job_id` |
+| `GET` | `/api/status/{job_id}` | — | Poll job status and retrieve results |
+| `GET` | `/api/events` | — | List available events for the dropdown |
+| `GET` | `/api/history?event_code=X` | Required | Submission history for authenticated user + event |
+| `GET` | `/api/account/submissions` | Required | All submissions for the authenticated user |
+| `DELETE` | `/api/account` | Required | Permanently delete account and all submissions |
+| `POST` | `/api/rubrics` | — | Create or update a rubric |
+| `GET` | `/api/rubrics/{event}` | — | Fetch a rubric by event name |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -156,27 +167,38 @@ scorely-ai/
 │   ├── app/
 │   │   ├── page.tsx                  # Landing page
 │   │   ├── upload/page.tsx           # Upload form + event selector
-│   │   └── results/[jobId]/page.tsx  # Polling + results display
+│   │   ├── results/[jobId]/page.tsx  # Polling + results display
+│   │   ├── account/page.tsx          # User profile, submission history, delete account
+│   │   ├── feedback/page.tsx         # Bug report / feature request form (mailto)
+│   │   └── api/proxy/                # Next.js proxy routes (auth bridge to FastAPI)
 │   ├── components/
 │   │   ├── UploadForm.tsx            # Two-level event dropdown + file upload
 │   │   ├── ScoreBreakdown.tsx        # Section scores with progress bars
+│   │   ├── HistorySidebar.tsx        # Past submissions for the current event
+│   │   ├── AuthButton.tsx            # Google sign-in / user dropdown
 │   │   ├── AuditProgress.tsx         # Loading state during polling
 │   │   └── ScorelyLogo.tsx           # Branding component
-│   ├── lib/api.ts                    # Centralized API client
+│   ├── lib/
+│   │   ├── api.ts                    # Centralized API client
+│   │   └── internal-token.ts         # NextAuth JWE → HS256 re-signing for FastAPI
 │   └── types/grading.ts              # TypeScript types matching backend schemas
 │
 ├── backend/
 │   ├── app/
 │   │   ├── main.py                   # FastAPI app, routes, CORS
+│   │   ├── auth.py                   # JWT verification, require_user / require_admin deps
 │   │   ├── events_data.py            # Static event/cluster hierarchy (16 events)
-│   │   ├── models.py                 # SQLAlchemy models (Job, Rubric)
+│   │   ├── models.py                 # SQLAlchemy models (User, Job, Rubric)
 │   │   ├── schemas.py                # Pydantic request/response schemas
 │   │   ├── database.py               # DB connection + session management
+│   │   ├── routers/
+│   │   │   ├── history.py            # /api/history, /api/account/submissions, DELETE /api/account
+│   │   │   └── admin.py              # Admin-only stats + user management endpoints
 │   │   └── services/
-│   │       ├── grading_service.py    # LLM prompt construction, text grading + vision check
+│   │       ├── grading_service.py    # LLM prompt construction, text grading, vision check, page count
 │   │       ├── rubric_service.py     # Rubric CRUD
-│   │       └── pdf_service.py        # PDF extraction + validation
-│   ├── rubrics/                      # 6 seeded JSON rubric files
+│   │       └── pdf_service.py        # PDF extraction, validation, structure detection
+│   ├── rubrics/                      # Seeded JSON rubric files
 │   └── scripts/
 │       └── add_rubric.py             # CLI to seed or create rubrics
 │
@@ -190,7 +212,7 @@ scorely-ai/
 <!-- INSTALLATION -->
 ## Running Locally
 
-**Prerequisites:** Python 3.10+, Node.js 18+, PostgreSQL 16, OpenAI API key
+**Prerequisites:** Python 3.10+, Node.js 18+, PostgreSQL 16, OpenAI API key, Google OAuth credentials (for auth)
 
 ```
 git clone https://github.com/PartyD1/scorely-ai.git
@@ -219,7 +241,7 @@ uvicorn app.main:app --reload --port 8000
 cd frontend && npm install
 ```
 ```
-cp .env.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:8000
+cp .env.example .env.local   # set NEXT_PUBLIC_API_URL, NEXTAUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 ```
 ```
 npm run dev
