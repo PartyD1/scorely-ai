@@ -116,15 +116,11 @@ export default function ResultsPage({
           </div>
         )}
 
-        {/* Results with history sidebar */}
+        {/* Results with past submissions below */}
         {result && (
-          <div className="flex flex-col lg:flex-row gap-6 w-full items-start">
-            <div className="flex-1 min-w-0">
-              <ScoreBreakdown result={result} />
-            </div>
-            {eventCode && (
-              <HistorySidebar currentJobId={jobId} eventCode={eventCode} />
-            )}
+          <div className="w-full flex flex-col gap-6">
+            <ScoreBreakdown result={result} />
+            {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
           </div>
         )}
       </div>

@@ -133,7 +133,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
   const hasFlaggedPenalties = result.penalties?.some((p) => p.status === "flagged");
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       {/* Truncation warning banner */}
       {result.was_truncated && (
         <div className="flex items-center gap-3 bg-[#FBBF24]/10 border border-[#FBBF24]/40 rounded-md px-5 py-4">
@@ -157,19 +157,10 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
 
       {/* Overall score hero card */}
       <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-10 text-center">
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center mb-6">
           <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest">
             Audit Complete
           </p>
-          {result.graded_by === "gemini" ? (
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-sm border bg-[#6366F1]/10 border-[#6366F1]/40 text-[#A5B4FC]">
-              ✦ Gemini 2.5 Flash
-            </span>
-          ) : result.graded_by === "openai" ? (
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-sm border bg-[#10B981]/10 border-[#10B981]/40 text-[#6EE7B7]">
-              ⬡ GPT-4o-mini
-            </span>
-          ) : null}
         </div>
         <p className="text-8xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
           {overallPct.toFixed(0)}%

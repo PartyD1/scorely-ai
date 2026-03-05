@@ -78,7 +78,7 @@ def delete_account(
     user: User = Depends(require_user),
 ):
     """Permanently delete the authenticated user and all their submissions."""
-    db.query(Job).filter(Job.user_id == user.id).delete()
+    db.query(Job).filter(Job.user_id == user.id).delete(synchronize_session=False)
     db.delete(user)
     db.commit()
     return Response(status_code=204)

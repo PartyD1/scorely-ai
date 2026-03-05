@@ -70,6 +70,14 @@ export default function AuthButton() {
               <AccountIcon />
               My Account
             </Link>
+            <Link
+              href="/feedback"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
+            >
+              <FeedbackIcon />
+              Feedback
+            </Link>
             <button
               onClick={() => { setOpen(false); signOut(); }}
               className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
@@ -118,6 +126,14 @@ function SignOutIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
       <path d="M13 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-4M8 14l4-4-4-4M12 10H3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function FeedbackIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+      <path d="M2 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6l-4 3V4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
     </svg>
   );
 }

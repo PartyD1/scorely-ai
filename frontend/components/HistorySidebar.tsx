@@ -43,38 +43,34 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
       .finally(() => setLoading(false));
   }, [session, status, eventCode]);
 
+  if (!session && !loading) return null;
+
   return (
-    <aside className="w-full lg:w-64 xl:w-72 shrink-0">
-      <div className="sticky top-6 bg-[#060F1A] border border-[#1E3A5F] rounded-xl p-4">
+    <aside className="w-full">
+      <div className="bg-[#060F1A] border border-[#1E3A5F] rounded-xl p-4">
         <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-4">
           Past Submissions
         </p>
 
-        {/* Not signed in */}
-        {!session && !loading && (
-          <p className="text-[#64748B] text-xs leading-relaxed">
-            Sign in to save results and track your improvement over time.
-          </p>
-        )}
-
         {/* Loading */}
         {loading && (
-          <div className="space-y-3">
+          <div className="flex gap-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-14 rounded-lg bg-[#0F2235] animate-pulse" />
+              <div key={i} className="h-14 w-36 rounded-lg bg-[#0F2235] animate-pulse" />
             ))}
           </div>
         )}
 
-        {/* History list */}
+        {/* Empty */}
         {!loading && session && history.length === 0 && (
           <p className="text-[#64748B] text-xs leading-relaxed">
             No previous submissions for this event.
           </p>
         )}
 
+        {/* History row */}
         {!loading && history.length > 0 && (
-          <ul className="space-y-2">
+          <ul className="flex flex-wrap gap-3">
             {history.map((item) => {
               const pct = Math.round((item.total_awarded / item.total_possible) * 100);
               const isCurrent = item.job_id === currentJobId;
@@ -82,25 +78,19 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
                 <li key={item.job_id}>
                   <Link
                     href={`/results/${item.job_id}`}
-                    className={`flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg transition-colors duration-150 ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 ${
                       isCurrent
                         ? "bg-[#0F2235] border border-[#0073C1]/40"
                         : "hover:bg-[#0A1929] border border-transparent"
                     }`}
                   >
                     <div className="min-w-0">
-                      <p className="text-[#94A3B8] text-xs truncate">
-                        {formatDate(item.created_at)}
-                      </p>
+                      <p className="text-[#94A3B8] text-xs">{formatDate(item.created_at)}</p>
                       {isCurrent && (
-                        <p className="text-[#0073C1] text-[10px] font-medium mt-0.5">
-                          Current
-                        </p>
+                        <p className="text-[#0073C1] text-[10px] font-medium mt-0.5">Current</p>
                       )}
                     </div>
-                    <span
-                      className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}
-                    >
+                    <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}>
                       {pct}%
                     </span>
                   </Link>
