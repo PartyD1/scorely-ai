@@ -71,3 +71,14 @@ export async function getAdminUserSubmissions(userId: string) {
   if (!res.ok) throw new Error("Failed to fetch user submissions");
   return res.json();
 }
+
+export async function getAccountSubmissions(): Promise<HistoryItem[]> {
+  const res = await fetch("/api/proxy/account/submissions");
+  if (!res.ok) throw new Error("Failed to fetch submissions");
+  return res.json();
+}
+
+export async function deleteAccount(): Promise<void> {
+  const res = await fetch("/api/proxy/account", { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete account");
+}
