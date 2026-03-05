@@ -116,22 +116,11 @@ export default function ResultsPage({
           </div>
         )}
 
-        {/* Results with history sidebar */}
+        {/* Results with past submissions below */}
         {result && (
-          <div className="w-full">
-            {/* Mobile: stack vertically */}
-            <div className="lg:hidden flex flex-col gap-6">
-              <ScoreBreakdown result={result} />
-              {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
-            </div>
-            {/* Desktop: 3-col grid so score stays centered regardless of sidebar */}
-            <div className="hidden lg:grid lg:grid-cols-[16rem_1fr_16rem] gap-6 items-start">
-              <div />
-              <ScoreBreakdown result={result} />
-              <div>
-                {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
-              </div>
-            </div>
+          <div className="w-full flex flex-col gap-6">
+            <ScoreBreakdown result={result} />
+            {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
           </div>
         )}
       </div>
