@@ -118,13 +118,20 @@ export default function ResultsPage({
 
         {/* Results with history sidebar */}
         {result && (
-          <div className="flex flex-col lg:flex-row gap-6 w-full items-start">
-            <div className="flex-1 min-w-0">
+          <div className="w-full">
+            {/* Mobile: stack vertically */}
+            <div className="lg:hidden flex flex-col gap-6">
               <ScoreBreakdown result={result} />
+              {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
             </div>
-            {eventCode && (
-              <HistorySidebar currentJobId={jobId} eventCode={eventCode} />
-            )}
+            {/* Desktop: 3-col grid so score stays centered regardless of sidebar */}
+            <div className="hidden lg:grid lg:grid-cols-[16rem_1fr_16rem] gap-6 items-start">
+              <div />
+              <ScoreBreakdown result={result} />
+              <div>
+                {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
+              </div>
+            </div>
           </div>
         )}
       </div>
