@@ -103,9 +103,9 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}>
                         {pct}%
                       </span>
-                      {delta !== null && (
-                        <span className={`text-[10px] font-semibold ${delta > 0 ? "text-[#22C55E]" : delta < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
-                          {delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : "—"}
+                      {delta !== null && delta !== 0 && (
+                        <span className={`text-[10px] font-semibold ${delta > 0 ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+                          {delta > 0 ? `+${delta}%` : `${delta}%`}
                         </span>
                       )}
                     </div>

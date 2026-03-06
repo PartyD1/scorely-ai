@@ -211,7 +211,7 @@ _DECA_KEYWORDS = [
 ]
 
 _MIN_WORD_COUNT = 200
-_MIN_KEYWORD_HITS = 2  # Deliberately low — block obvious non-reports, not edge cases
+_MIN_KEYWORD_HITS = 4
 
 
 def _validate_deca_report(text: str) -> None:
