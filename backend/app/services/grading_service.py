@@ -1,6 +1,7 @@
 """LLM interaction and grading logic."""
 
 import base64
+import concurrent.futures
 import json
 import logging
 import os
@@ -13,7 +14,7 @@ from ..models import Job
 from ..schemas import GradingResult
 from ..utils.file_cleanup import delete_file
 from ..utils.token_counter import truncate_text
-from .pdf_service import detect_document_structure, extract_text, get_page_count, render_pages_as_images
+from .pdf_service import extract_all, render_pages_as_images
 from ..events_data import get_cluster_for_code, get_event_by_code
 from .rubric_service import get_rubric_by_event, get_rubric_by_event_code
 
@@ -198,6 +199,47 @@ VISION_SCHEMA = {
 
 
 # ---------------------------------------------------------------------------
+# DECA report pre-validation
+# ---------------------------------------------------------------------------
+
+_DECA_KEYWORDS = [
+    "deca", "executive summary", "situation analysis", "recommended solution",
+    "implementation", "bibliography", "references", "evaluation",
+    "marketing", "finance", "entrepreneurship", "management", "business",
+    "company", "competitive", "strategy", "analysis", "market",
+    "revenue", "profit", "customer", "product", "service",
+]
+
+_MIN_WORD_COUNT = 200
+_MIN_KEYWORD_HITS = 4
+
+
+def _validate_deca_report(text: str) -> None:
+    """Raise ValueError if the text clearly isn't a DECA written report.
+
+    Thresholds are intentionally permissive to avoid false positives on
+    legitimate reports. The goal is to block obvious junk (receipts, textbooks,
+    blank/scanned PDFs) before they reach the OpenAI API.
+    """
+    words = text.split()
+    if len(words) < _MIN_WORD_COUNT:
+        raise ValueError(
+            "We couldn't extract enough text from your PDF. "
+            "Make sure you're uploading a typed (not scanned/image-only) DECA written entry. "
+            "If this is your report, try re-exporting it as a text-based PDF."
+        )
+
+    text_lower = text.lower()
+    hits = sum(1 for kw in _DECA_KEYWORDS if kw in text_lower)
+    if hits < _MIN_KEYWORD_HITS:
+        raise ValueError(
+            "This PDF doesn't appear to be a DECA written entry — we didn't find "
+            "enough business or DECA-related content. If this is your report, "
+            "double-check you uploaded the correct file."
+        )
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -275,13 +317,13 @@ def grade_report(db: Session, job_id: str) -> None:
         job.status = "processing"
         db.commit()
 
-        # Get page count and document structure before text extraction (file deleted in finally)
-        page_count = get_page_count(job.file_path)
-        doc_structure = detect_document_structure(job.file_path)
+        # Single-pass PDF read: page count + structure detection + text extraction
+        page_count, doc_structure, raw_text = extract_all(job.file_path)
 
-        # Extract and truncate text
-        text = extract_text(job.file_path)
-        text, was_truncated = truncate_text(text)
+        # Reject non-DECA PDFs before touching the OpenAI API
+        _validate_deca_report(raw_text)
+
+        text, was_truncated = truncate_text(raw_text)
         if was_truncated:
             logger.warning("Job %s: text was truncated", job_id)
 
@@ -313,15 +355,6 @@ def grade_report(db: Session, job_id: str) -> None:
         if not required_outline:
             required_outline = rubric.rubric_data.get("required_outline")
 
-        # Call 1: text-based rubric grading
-        result = call_llm(
-            cluster_name, specific_name, event_code, event_description,
-            rubric.rubric_data, text, required_outline,
-        )
-
-        # Override event_name in LLM output with the specific event display string
-        result["event_name"] = f"{specific_name} ({event_code})" if job.event_code else specific_name
-
         # Find the appearance section in the rubric for the vision check
         appearance_section = next(
             (s for s in rubric.rubric_data.get("sections", [])
@@ -329,10 +362,30 @@ def grade_report(db: Session, job_id: str) -> None:
             None,
         )
 
-        # Call 2: visual check — SOA image detection + appearance grading
-        # Runs against rendered page images; overrides text-based results for both.
+        # Run text grading and vision check in parallel — they are independent
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            text_future = executor.submit(
+                call_llm,
+                cluster_name, specific_name, event_code, event_description,
+                rubric.rubric_data, text, required_outline,
+            )
+            vision_future = executor.submit(
+                call_vision_check, job.file_path, page_count, appearance_section,
+            )
+            result = text_future.result()
+            vision_exc = None
+            try:
+                vision_result = vision_future.result()
+            except Exception as _ve:
+                vision_exc = _ve
+                vision_result = None
+
+        # Override event_name in LLM output with the specific event display string
+        result["event_name"] = f"{specific_name} ({event_code})" if job.event_code else specific_name
+
         try:
-            vision_result = call_vision_check(job.file_path, page_count, appearance_section)
+            if vision_result is None:
+                raise vision_exc
 
             # Override SOA penalty status (vision sees image-only pages that text extraction misses)
             soa_status = vision_result["soa_status"]
@@ -380,9 +433,9 @@ def grade_report(db: Session, job_id: str) -> None:
         if doc_structure.get("has_toc"):
             excluded_pages.append("table of contents")
         # For SOA: prefer vision result if available, fall back to text detection
-        try:
+        if vision_result is not None:
             soa_found = vision_result["soa_status"] in ("signed", "unsigned", "cannot_determine")
-        except NameError:
+        else:
             soa_found = doc_structure.get("has_soa", False)
         if soa_found:
             excluded_pages.append("statement of assurances")

@@ -1,5 +1,4 @@
-"use client";
-
+import { Suspense } from "react";
 import UploadForm from "@/components/UploadForm";
 import ScorelyLogo from "@/components/ScorelyLogo";
 import AuthButton from "@/components/AuthButton";
@@ -26,7 +25,9 @@ export default function UploadPage() {
             Select your event and upload your PDF to begin the audit.
           </p>
 
-          <UploadForm />
+          <Suspense>
+            <UploadForm />
+          </Suspense>
         </div>
       </div>
     </main>

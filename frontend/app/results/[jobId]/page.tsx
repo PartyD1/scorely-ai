@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState, use, useCallback } from "react";
 import Link from "next/link";
 import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
@@ -24,6 +24,13 @@ export default function ResultsPage({
   const [eventCode, setEventCode] = useState<string | null>(null);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -80,12 +87,20 @@ export default function ResultsPage({
         <div className="flex items-center gap-4">
           <AuthButton />
           {result && (
-            <Link
-              href="/upload"
-              className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-            >
-              New Audit →
-            </Link>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={copyLink}
+                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                {copied ? "Copied!" : "Copy link"}
+              </button>
+              <Link
+                href={`/upload${eventCode ? `?event=${eventCode}` : ""}`}
+                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                New Audit →
+              </Link>
+            </div>
           )}
         </div>
       </header>
@@ -103,16 +118,44 @@ export default function ResultsPage({
 
         {/* Error state */}
         {error && (
-          <div className="mt-16 text-center max-w-sm">
-            <p className="text-[#EF4444] bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-md px-6 py-4 mb-6 text-sm">
-              {error}
-            </p>
-            <Link
-              href="/upload"
-              className="text-[#0073C1] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-            >
-              ← Try again
-            </Link>
+          <div className="mt-16 w-full max-w-md mx-auto">
+            <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-10 text-center">
+              {/* Icon */}
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#EF4444]/10 border border-[#EF4444]/30 mx-auto mb-6">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-[#EF4444]">
+                  <path d="M10 6v4m0 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              {/* Title */}
+              <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-2">
+                {error.toLowerCase().includes("deca") || error.toLowerCase().includes("written entry") || error.toLowerCase().includes("extract enough text")
+                  ? "Document Not Recognized"
+                  : error.toLowerCase().includes("longer than expected") || error.toLowerCase().includes("starting up")
+                  ? "Taking Too Long"
+                  : error.toLowerCase().includes("backend") || error.toLowerCase().includes("status")
+                  ? "Connection Error"
+                  : "Something Went Wrong"}
+              </p>
+              {/* Message */}
+              <p className="text-[#94A3B8] text-sm leading-relaxed mb-8">
+                {error}
+              </p>
+              {/* CTA */}
+              <Link
+                href="/upload"
+                className="inline-block px-6 py-2.5 bg-[#0073C1] hover:bg-[#005fa3] text-white text-sm font-semibold rounded-sm transition-colors duration-200"
+              >
+                Try again
+              </Link>
+              {(error.toLowerCase().includes("deca") || error.toLowerCase().includes("written entry") || error.toLowerCase().includes("extract enough text")) && (
+                <p className="text-[#64748B] text-xs mt-5">
+                  Think this is a mistake?{" "}
+                  <Link href="/feedback" className="text-[#0073C1] hover:text-[#60A5FA] underline transition-colors duration-150">
+                    Let us know
+                  </Link>
+                </p>
+              )}
+            </div>
           </div>
         )}
 

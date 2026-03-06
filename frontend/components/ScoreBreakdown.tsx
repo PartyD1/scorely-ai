@@ -30,8 +30,46 @@ function getSemanticBg(pct: number): { bg: string; border: string; text: string 
   return { bg: "bg-[#7F1D1D]/20", border: "border-[#7F1D1D]/40", text: "text-red-300" };
 }
 
-function SectionCard({ section, index }: { section: SectionScore; index: number }) {
-  const [expanded, setExpanded] = useState(false);
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <button
+      onClick={handleCopy}
+      title="Copy to clipboard"
+      className="shrink-0 text-[#60A5FA]/60 hover:text-[#60A5FA] transition-colors duration-150"
+    >
+      {copied ? (
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8l3.5 3.5L13 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <rect x="5" y="5" width="8" height="9" rx="1.2" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M11 5V3.5A1.5 1.5 0 009.5 2h-6A1.5 1.5 0 002 3.5v7A1.5 1.5 0 003.5 12H5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+function SectionCard({
+  section,
+  index,
+  forceExpanded,
+}: {
+  section: SectionScore;
+  index: number;
+  forceExpanded: boolean;
+}) {
+  const [localExpanded, setLocalExpanded] = useState(false);
+  const expanded = forceExpanded || localExpanded;
+
   const pct = section.max_points > 0
     ? (section.awarded_points / section.max_points) * 100
     : 0;
@@ -40,8 +78,8 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
 
   return (
     <div
-      className="bg-[#00162A] border border-[#1E293B] rounded-md cursor-pointer hover:border-[#0073C1]/40 transition-all duration-300 ease-in-out overflow-hidden"
-      onClick={() => setExpanded(!expanded)}
+      className="group bg-[#00162A] border border-[#1E293B] rounded-md cursor-pointer hover:border-[#0073C1]/60 transition-all duration-300 ease-in-out overflow-hidden"
+      onClick={() => setLocalExpanded(!localExpanded)}
     >
       {/* Header row */}
       <div className="flex items-center gap-4 px-6 pt-5 pb-3">
@@ -64,6 +102,9 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
             style={{ width: `${pct}%`, backgroundColor: barColor }}
           />
         </div>
+        <span className="text-[#0073C1]/0 group-hover:text-[#0073C1]/60 text-[10px] font-medium transition-colors duration-200 select-none">
+          {!expanded ? "Click to expand" : ""}
+        </span>
         <svg
           width="16"
           height="16"
@@ -89,9 +130,12 @@ function SectionCard({ section, index }: { section: SectionScore; index: number 
           </p>
           {section.improvement && section.awarded_points < section.max_points && (
             <div className="mt-4 p-4 rounded-md bg-[#0073C1]/10 border border-[#0073C1]/30">
-              <p className="text-xs font-semibold text-[#60A5FA] uppercase tracking-widest mb-2">
-                How to improve
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-semibold text-[#60A5FA] uppercase tracking-widest">
+                  How to improve
+                </p>
+                <CopyButton text={section.improvement} />
+              </div>
               <p className="text-slate-300 text-sm leading-relaxed">
                 {section.improvement}
               </p>
@@ -126,6 +170,8 @@ function PenaltyCard({ penalty }: { penalty: PenaltyCheck }) {
 }
 
 export default function ScoreBreakdown({ result }: { result: GradingResult }) {
+  const [allExpanded, setAllExpanded] = useState(false);
+
   const overallPct = result.total_possible > 0
     ? (result.total_awarded / result.total_possible) * 100
     : 0;
@@ -157,10 +203,13 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
 
       {/* Overall score hero card */}
       <div className="bg-[#00162A] border border-[#1E293B] rounded-md p-10 text-center">
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex flex-col items-center gap-1 mb-6">
           <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest">
             Audit Complete
           </p>
+          {result.event_name && (
+            <p className="text-[#0073C1] text-sm font-medium">{result.event_name}</p>
+          )}
         </div>
         <p className="text-8xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
           {overallPct.toFixed(0)}%
@@ -207,11 +256,19 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
 
       {/* Section breakdown */}
       <div className="space-y-3">
-        <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest pb-2">
-          Section Breakdown
-        </h2>
+        <div className="flex items-center justify-between pb-2">
+          <h2 className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest">
+            Section Breakdown
+          </h2>
+          <button
+            onClick={() => setAllExpanded((prev) => !prev)}
+            className="text-[#0073C1] text-xs font-medium hover:text-[#60A5FA] transition-colors duration-150"
+          >
+            {allExpanded ? "Collapse All" : "Expand All"}
+          </button>
+        </div>
         {result.sections.map((section, i) => (
-          <SectionCard key={section.name} section={section} index={i} />
+          <SectionCard key={section.name} section={section} index={i} forceExpanded={allExpanded} />
         ))}
       </div>
 

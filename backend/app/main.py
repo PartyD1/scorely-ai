@@ -5,9 +5,10 @@ import logging
 import os
 import uuid
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta
 from pathlib import Path
 
-from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -85,8 +86,13 @@ def run_grading(job_id: str) -> None:
         db.close()
 
 
+_ANON_DAILY_LIMIT = 3
+_AUTH_DAILY_LIMIT = 10
+
+
 @app.post("/api/upload", response_model=UploadResponse)
 async def upload_pdf(
+    request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     event_code: str = Form(...),
@@ -94,6 +100,30 @@ async def upload_pdf(
     user: User | None = Depends(get_optional_user),
 ):
     """Upload a PDF for grading. Returns a job_id to poll for results."""
+    # Rate limiting
+    client_ip = (
+        request.headers.get("X-Forwarded-For", request.client.host or "")
+        .split(",")[0]
+        .strip()
+    )
+    cutoff = datetime.utcnow() - timedelta(hours=24)
+    if user:
+        count = db.query(Job).filter(Job.user_id == user.id, Job.created_at >= cutoff).count()
+        limit = _AUTH_DAILY_LIMIT
+        if count >= limit:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Rate limit reached: {limit} audits per day. Try again tomorrow.",
+            )
+    else:
+        count = db.query(Job).filter(Job.ip_address == client_ip, Job.created_at >= cutoff).count()
+        limit = _ANON_DAILY_LIMIT
+        if count >= limit:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Rate limit reached: {limit} audits per day for guests. Sign in for a higher limit.",
+            )
+
     # Validate file type
     error = pdf_service.validate_upload(file)
     if error:
@@ -134,6 +164,7 @@ async def upload_pdf(
         file_path=file_path,
         status="pending",
         user_id=user.id if user else None,
+        ip_address=client_ip,
     )
     db.add(job)
     db.commit()
