@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getEvents, uploadPdf } from "@/lib/api";
 import { ClusterEvents } from "@/types/grading";
 
@@ -11,6 +11,7 @@ const RETRY_DELAY_MS = 5000;
 
 export default function UploadForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [clusters, setClusters] = useState<ClusterEvents[]>([]);
   const [selectedEventCode, setSelectedEventCode] = useState("");
@@ -27,6 +28,12 @@ export default function UploadForm() {
       const data = await getEvents();
       setClusters(data);
       retryCountRef.current = 0;
+      // Pre-select event from ?event= query param if present
+      const preselect = searchParams.get("event");
+      if (preselect) {
+        const allCodes = data.flatMap((c) => c.events.map((e) => e.code));
+        if (allCodes.includes(preselect)) setSelectedEventCode(preselect);
+      }
     } catch {
       if (retryCountRef.current < MAX_EVENT_RETRIES) {
         retryCountRef.current += 1;

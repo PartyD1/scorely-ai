@@ -10,7 +10,7 @@ const STEPS = [
   { pct: 93, label: "Almost there! writing up your results..." },
 ];
 
-const STEP_DURATION = 4000;
+const STEP_DURATION = 6000;
 
 export default function AuditProgress({ message, complete }: { message?: string; complete?: boolean }) {
   const [step, setStep] = useState(0);

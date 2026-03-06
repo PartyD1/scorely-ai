@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState, use, useCallback } from "react";
 import Link from "next/link";
 import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
@@ -24,6 +24,13 @@ export default function ResultsPage({
   const [eventCode, setEventCode] = useState<string | null>(null);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -80,12 +87,20 @@ export default function ResultsPage({
         <div className="flex items-center gap-4">
           <AuthButton />
           {result && (
-            <Link
-              href="/upload"
-              className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-            >
-              New Audit →
-            </Link>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={copyLink}
+                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                {copied ? "Copied!" : "Copy link"}
+              </button>
+              <Link
+                href={`/upload${eventCode ? `?event=${eventCode}` : ""}`}
+                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                New Audit →
+              </Link>
+            </div>
           )}
         </div>
       </header>

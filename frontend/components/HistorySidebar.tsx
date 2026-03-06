@@ -71,9 +71,14 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
         {/* History row */}
         {!loading && history.length > 0 && (
           <ul className="flex flex-wrap gap-3">
-            {history.map((item) => {
+            {history.map((item, i) => {
               const pct = Math.round((item.total_awarded / item.total_possible) * 100);
               const isCurrent = item.job_id === currentJobId;
+              // Delta vs. immediately previous submission (index i+1 = older)
+              const prev = history[i + 1];
+              const delta = prev
+                ? pct - Math.round((prev.total_awarded / prev.total_possible) * 100)
+                : null;
               return (
                 <li key={item.job_id}>
                   <Link
@@ -94,9 +99,16 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
                         </p>
                       )}
                     </div>
-                    <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}>
-                      {pct}%
-                    </span>
+                    <div className="flex flex-col items-end gap-0.5 shrink-0">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}>
+                        {pct}%
+                      </span>
+                      {delta !== null && (
+                        <span className={`text-[10px] font-semibold ${delta > 0 ? "text-[#22C55E]" : delta < 0 ? "text-[#EF4444]" : "text-[#64748B]"}`}>
+                          {delta > 0 ? `+${delta}%` : delta < 0 ? `${delta}%` : "—"}
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 </li>
               );

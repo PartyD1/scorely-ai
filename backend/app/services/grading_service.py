@@ -199,6 +199,44 @@ VISION_SCHEMA = {
 
 
 # ---------------------------------------------------------------------------
+# DECA report pre-validation
+# ---------------------------------------------------------------------------
+
+_DECA_KEYWORDS = [
+    "deca", "executive summary", "situation analysis", "recommended solution",
+    "implementation", "bibliography", "references", "evaluation",
+    "marketing", "finance", "entrepreneurship", "management", "business",
+    "company", "competitive", "strategy", "analysis", "market",
+    "revenue", "profit", "customer", "product", "service",
+]
+
+_MIN_WORD_COUNT = 200
+_MIN_KEYWORD_HITS = 4
+
+
+def _validate_deca_report(text: str) -> None:
+    """Raise ValueError if the text doesn't look like a DECA written report.
+
+    Checks minimum word count and a keyword score based on DECA/business terms.
+    This runs before any LLM calls to avoid wasting API tokens on random PDFs.
+    """
+    words = text.split()
+    if len(words) < _MIN_WORD_COUNT:
+        raise ValueError(
+            "This doesn't look like a DECA written report — the document is too short. "
+            "Please upload your actual written entry PDF."
+        )
+
+    text_lower = text.lower()
+    hits = sum(1 for kw in _DECA_KEYWORDS if kw in text_lower)
+    if hits < _MIN_KEYWORD_HITS:
+        raise ValueError(
+            "This doesn't look like a DECA written report. "
+            "Please upload your actual written entry PDF."
+        )
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -278,6 +316,10 @@ def grade_report(db: Session, job_id: str) -> None:
 
         # Single-pass PDF read: page count + structure detection + text extraction
         page_count, doc_structure, raw_text = extract_all(job.file_path)
+
+        # Reject non-DECA PDFs before touching the OpenAI API
+        _validate_deca_report(raw_text)
+
         text, was_truncated = truncate_text(raw_text)
         if was_truncated:
             logger.warning("Job %s: text was truncated", job_id)

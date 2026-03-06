@@ -34,6 +34,7 @@ class Job(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
+    ip_address = Column(String, nullable=True, index=True)
 
 
 class Rubric(Base):
