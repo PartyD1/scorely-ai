@@ -183,9 +183,12 @@ export default function UploadForm() {
 
       {/* Error message */}
       {error && (
-        <p className="text-[#EF4444] text-sm bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-sm px-4 py-3">
-          {error}
-        </p>
+        <div className="flex items-start gap-3 bg-[#EF4444]/8 border border-[#EF4444]/30 rounded-sm px-4 py-3">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-[#EF4444] shrink-0 mt-0.5">
+            <path d="M10 6v4m0 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <p className="text-[#EF4444] text-sm leading-relaxed">{error}</p>
+        </div>
       )}
 
       {/* Submit button */}
