@@ -147,6 +147,14 @@ export default function ResultsPage({
               >
                 Try again
               </Link>
+              {(error.toLowerCase().includes("deca") || error.toLowerCase().includes("written entry") || error.toLowerCase().includes("extract enough text")) && (
+                <p className="text-[#64748B] text-xs mt-5">
+                  Think this is a mistake?{" "}
+                  <Link href="/feedback" className="text-[#0073C1] hover:text-[#60A5FA] underline transition-colors duration-150">
+                    Let us know
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
         )}
