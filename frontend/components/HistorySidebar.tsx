@@ -49,7 +49,7 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
     <aside className="w-full">
       <div className="bg-[#060F1A] border border-[#1E3A5F] rounded-xl p-4">
         <p className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest mb-4">
-          Past Submissions
+          Submissions
         </p>
 
         {/* Loading */}
@@ -80,14 +80,18 @@ export default function HistorySidebar({ currentJobId, eventCode }: HistorySideb
                     href={`/results/${item.job_id}`}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 ${
                       isCurrent
-                        ? "bg-[#0F2235] border border-[#0073C1]/40"
+                        ? "bg-[#0A1F35] border border-[#0073C1] ring-1 ring-[#0073C1]/30"
                         : "hover:bg-[#0A1929] border border-transparent"
                     }`}
                   >
                     <div className="min-w-0">
-                      <p className="text-[#94A3B8] text-xs">{formatDate(item.created_at)}</p>
+                      <p className={`text-xs ${isCurrent ? "text-white font-medium" : "text-[#94A3B8]"}`}>
+                        {formatDate(item.created_at)}
+                      </p>
                       {isCurrent && (
-                        <p className="text-[#0073C1] text-[10px] font-medium mt-0.5">Current</p>
+                        <p className="text-[10px] font-semibold mt-0.5 text-[#0073C1] uppercase tracking-wide">
+                          ● Viewing now
+                        </p>
                       )}
                     </div>
                     <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${scoreColor(pct)}`}>
