@@ -211,28 +211,31 @@ _DECA_KEYWORDS = [
 ]
 
 _MIN_WORD_COUNT = 200
-_MIN_KEYWORD_HITS = 4
+_MIN_KEYWORD_HITS = 2  # Deliberately low — block obvious non-reports, not edge cases
 
 
 def _validate_deca_report(text: str) -> None:
-    """Raise ValueError if the text doesn't look like a DECA written report.
+    """Raise ValueError if the text clearly isn't a DECA written report.
 
-    Checks minimum word count and a keyword score based on DECA/business terms.
-    This runs before any LLM calls to avoid wasting API tokens on random PDFs.
+    Thresholds are intentionally permissive to avoid false positives on
+    legitimate reports. The goal is to block obvious junk (receipts, textbooks,
+    blank/scanned PDFs) before they reach the OpenAI API.
     """
     words = text.split()
     if len(words) < _MIN_WORD_COUNT:
         raise ValueError(
-            "This doesn't look like a DECA written report — the document is too short. "
-            "Please upload your actual written entry PDF."
+            "We couldn't extract enough text from your PDF. "
+            "Make sure you're uploading a typed (not scanned/image-only) DECA written entry. "
+            "If this is your report, try re-exporting it as a text-based PDF."
         )
 
     text_lower = text.lower()
     hits = sum(1 for kw in _DECA_KEYWORDS if kw in text_lower)
     if hits < _MIN_KEYWORD_HITS:
         raise ValueError(
-            "This doesn't look like a DECA written report. "
-            "Please upload your actual written entry PDF."
+            "This PDF doesn't appear to be a DECA written entry — we didn't find "
+            "enough business or DECA-related content. If this is your report, "
+            "double-check you uploaded the correct file."
         )
 
 

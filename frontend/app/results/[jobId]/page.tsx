@@ -128,8 +128,8 @@ export default function ResultsPage({
               </div>
               {/* Title */}
               <p className="text-[#94A3B8] text-xs font-semibold uppercase tracking-widest mb-2">
-                {error.toLowerCase().includes("deca") || error.toLowerCase().includes("written report")
-                  ? "Invalid Document"
+                {error.toLowerCase().includes("deca") || error.toLowerCase().includes("written entry") || error.toLowerCase().includes("extract enough text")
+                  ? "Document Not Recognized"
                   : error.toLowerCase().includes("longer than expected") || error.toLowerCase().includes("starting up")
                   ? "Taking Too Long"
                   : error.toLowerCase().includes("backend") || error.toLowerCase().includes("status")
