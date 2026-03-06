@@ -111,6 +111,43 @@ def extract_text(file_path: str) -> str:
         ) from e
 
 
+def extract_all(file_path: str) -> tuple[int, dict, str]:
+    """Open the PDF once and return (page_count, doc_structure, text).
+
+    Combines get_page_count + detect_document_structure + extract_text into
+    a single file open, which avoids redundant I/O on large PDFs.
+    """
+    doc = fitz.open(file_path)
+    page_count = len(doc)
+
+    has_title_page = False
+    has_toc = False
+    has_soa = False
+    text_parts = []
+
+    for i, page in enumerate(doc):
+        text = page.get_text()
+        text_parts.append(text)
+        stripped = text.strip()
+        text_lower = stripped.lower()
+
+        if i == 0 and len(stripped.split()) < 80:
+            has_title_page = True
+        if "table of contents" in text_lower or text_lower.startswith("contents"):
+            has_toc = True
+        if "statement of assurances" in text_lower or "academic integrity" in text_lower:
+            has_soa = True
+
+    doc.close()
+
+    full_text = "\n".join(text_parts)
+    if not full_text.strip():
+        raise ValueError("Unable to extract text from PDF. Ensure it's a typed document.")
+
+    doc_structure = {"has_title_page": has_title_page, "has_toc": has_toc, "has_soa": has_soa}
+    return page_count, doc_structure, full_text
+
+
 def render_pages_as_images(file_path: str, page_indices: list[int]) -> list[bytes]:
     """Render specific PDF pages as PNG images at 150 DPI.
 
