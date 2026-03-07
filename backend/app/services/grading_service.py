@@ -272,7 +272,7 @@ def _compute_page_count_penalty(page_count: int, excluded_pages: list[str]) -> d
 
     return {
         "description": "Page count within 20 pages (5-pt penalty per extra page)",
-        "penalty_points": 5,
+        "penalty_points": 0,
         "status": "clear",
         "note": (
             f"Total pages: {page_count}. {excluded_note} "

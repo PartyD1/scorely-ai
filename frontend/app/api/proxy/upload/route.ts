@@ -13,6 +13,9 @@ export async function POST(req: NextRequest) {
     body: formData,
   });
 
-  const data = await res.json();
+  const contentType = res.headers.get("content-type") ?? "";
+  const data = contentType.includes("application/json")
+    ? await res.json()
+    : { detail: await res.text() };
   return NextResponse.json(data, { status: res.status });
 }

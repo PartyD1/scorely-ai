@@ -22,8 +22,8 @@ export default function Home() {
           AUDIT YOUR<br />DECA REPORT.
         </h1>
         <p className="text-[#94A3B8] text-lg md:text-xl max-w-xl mb-10 leading-relaxed">
-          Upload your written report, select your event, and receive deterministic
-          section-by-section scoring in under 20 seconds.
+          Upload your written report, select your event, and receive structured,
+          rubric-anchored scoring in under 20 seconds.
         </p>
         <Link
           href="/upload"
