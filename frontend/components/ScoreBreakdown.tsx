@@ -208,7 +208,7 @@ export default function ScoreBreakdown({ result }: { result: GradingResult }) {
             Audit Complete
           </p>
           {result.event_name && (
-            <p className="text-[#E2E8F0] text-xl font-bold">{result.event_name}</p>
+            <p className="text-[#0073C1] text-xl font-bold">{result.event_name}</p>
           )}
         </div>
         <p className="text-8xl font-bold tracking-tighter text-[#E2E8F0] mb-2">
