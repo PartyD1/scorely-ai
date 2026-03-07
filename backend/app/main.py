@@ -42,9 +42,29 @@ def _seed_rubrics() -> None:
         db.close()
 
 
+def _recover_stuck_jobs() -> None:
+    """Mark jobs stuck in pending/processing as failed on startup.
+
+    BackgroundTasks are in-process — a server restart drops any in-flight work.
+    This prevents users from polling forever on a job that will never complete.
+    """
+    db = SessionLocal()
+    try:
+        stuck = db.query(Job).filter(Job.status.in_(["pending", "processing"])).all()
+        for job in stuck:
+            job.status = "failed"
+            job.error = "Server restarted while this job was in progress. Please re-submit."
+        if stuck:
+            db.commit()
+            logger.warning("Marked %d stuck job(s) as failed on startup", len(stuck))
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     _seed_rubrics()
+    _recover_stuck_jobs()
     yield
 
 

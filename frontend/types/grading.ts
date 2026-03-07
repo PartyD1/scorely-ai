@@ -38,7 +38,6 @@ export interface GradingResult {
 }
 
 export interface JobStatus {
-  job_id: string;
   status: "pending" | "processing" | "complete" | "failed";
   result: GradingResult | null;
   error: string | null;
