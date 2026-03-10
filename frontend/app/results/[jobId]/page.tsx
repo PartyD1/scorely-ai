@@ -5,10 +5,8 @@ import Link from "next/link";
 import { getJobStatus } from "@/lib/api";
 import { GradingResult } from "@/types/grading";
 import AuditProgress from "@/components/AuditProgress";
-import AuthButton from "@/components/AuthButton";
 import HistorySidebar from "@/components/HistorySidebar";
 import ScoreBreakdown from "@/components/ScoreBreakdown";
-import ScorelyLogo from "@/components/ScorelyLogo";
 
 const POLL_INTERVAL = 2000;
 const POLL_TIMEOUT = 180000; // 3 min — accounts for Render free-tier cold start (30–60 s)
@@ -81,30 +79,6 @@ export default function ResultsPage({
 
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
-      {/* Top bar */}
-      <header className="px-8 py-6 flex items-center justify-between">
-        <ScorelyLogo />
-        <div className="flex items-center gap-4">
-          <AuthButton />
-          {result && (
-            <div className="flex items-center gap-4">
-              <button
-                onClick={copyLink}
-                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-              >
-                {copied ? "Copied!" : "Copy link"}
-              </button>
-              <Link
-                href={`/upload${eventCode ? `?event=${eventCode}` : ""}`}
-                className="text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
-              >
-                New Audit →
-              </Link>
-            </div>
-          )}
-        </div>
-      </header>
-
       <div className="flex flex-col items-center px-4 pt-10 pb-24 max-w-5xl mx-auto">
         {/* Loading state */}
         {!result && !error && (
@@ -162,6 +136,20 @@ export default function ResultsPage({
         {/* Results with past submissions below */}
         {result && (
           <div className="w-full flex flex-col gap-6">
+            <div className="flex items-center justify-end gap-4">
+              <button
+                onClick={copyLink}
+                className="text-[#64748B] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                {copied ? "Copied!" : "Copy link"}
+              </button>
+              <Link
+                href={`/upload${eventCode ? `?event=${eventCode}` : ""}`}
+                className="text-[#64748B] hover:text-[#E2E8F0] text-sm transition-colors duration-200"
+              >
+                New Audit →
+              </Link>
+            </div>
             <ScoreBreakdown result={result} />
             {eventCode && <HistorySidebar currentJobId={jobId} eventCode={eventCode} />}
           </div>

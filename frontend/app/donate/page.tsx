@@ -1,16 +1,8 @@
 "use client";
 
-import ScorelyLogo from "@/components/ScorelyLogo";
-import AuthButton from "@/components/AuthButton";
-
 export default function DonatePage() {
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
-      <header className="px-8 py-6 flex items-center justify-between">
-        <ScorelyLogo />
-        <AuthButton />
-      </header>
-
       <section className="flex flex-col items-center justify-center text-center px-4 pt-20 pb-16 max-w-4xl mx-auto">
         <div className="text-5xl mb-6">☕</div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-[#E2E8F0] mb-4">

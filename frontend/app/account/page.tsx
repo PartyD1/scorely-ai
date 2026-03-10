@@ -5,8 +5,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import ScorelyLogo from "@/components/ScorelyLogo";
-import AuthButton from "@/components/AuthButton";
 import { getAccountSubmissions, deleteAccount } from "@/lib/api";
 import { HistoryItem } from "@/types/grading";
 
@@ -78,11 +76,6 @@ export default function AccountPage() {
 
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
-      <header className="px-8 py-6 flex items-center justify-between border-b border-[#1E3A5F]">
-        <ScorelyLogo />
-        <AuthButton />
-      </header>
-
       <div className="max-w-3xl mx-auto px-6 py-10 space-y-10">
 
         {/* Profile card */}

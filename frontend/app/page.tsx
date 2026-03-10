@@ -1,18 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import ScorelyLogo from "@/components/ScorelyLogo";
-import AuthButton from "@/components/AuthButton";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
-      {/* Top bar */}
-      <header className="px-8 py-6 flex items-center justify-between">
-        <ScorelyLogo />
-        <AuthButton />
-      </header>
-
       {/* Hero */}
       <section className="flex flex-col items-center justify-center text-center px-4 pt-16 pb-16 max-w-5xl mx-auto">
         <p className="text-[#0073C1] text-sm font-semibold uppercase tracking-widest mb-5">
