@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import ScorelyLogo from "@/components/ScorelyLogo";
+import AuthButton from "@/components/AuthButton";
 
 type FeedbackType = "Bug Report" | "Feature Request";
 
@@ -22,6 +24,11 @@ export default function FeedbackPage() {
 
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
+      <header className="px-8 py-6 flex items-center justify-between border-b border-[#1E3A5F]">
+        <ScorelyLogo />
+        <AuthButton />
+      </header>
+
       <div className="max-w-xl mx-auto px-6 py-10">
         <h1 className="text-[#E2E8F0] text-2xl font-semibold mb-1">Send Feedback</h1>
         <p className="text-[#64748B] text-sm mb-8">

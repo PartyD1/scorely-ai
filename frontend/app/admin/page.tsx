@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import ScorelyLogo from "@/components/ScorelyLogo";
+import AuthButton from "@/components/AuthButton";
 import { getAdminStats, getAdminUsers, getAdminUserSubmissions } from "@/lib/api";
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
@@ -114,6 +116,14 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
+      <header className="px-8 py-6 flex items-center justify-between border-b border-[#1E3A5F]">
+        <ScorelyLogo />
+        <div className="flex items-center gap-4">
+          <span className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest">Admin</span>
+          <AuthButton />
+        </div>
+      </header>
+
       <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
 
         {/* Stats cards */}
