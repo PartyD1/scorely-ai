@@ -9,7 +9,11 @@
 <br />
 <div align="center">
 
-  <img src="assets/brand/scorely-logo-transparent.png" alt="ScorelyAI" height="60" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/scorely-logo-transparent.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/brand/scorely-logo-light-bg.png">
+    <img src="assets/brand/scorely-logo-light-bg.png" alt="ScorelyAI" height="60">
+  </picture>
 
   <p align="center">
     <br />
