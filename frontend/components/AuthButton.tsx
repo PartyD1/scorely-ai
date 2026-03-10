@@ -92,13 +92,22 @@ export default function AuthButton() {
   }
 
   return (
-    <button
-      onClick={() => signIn("google")}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#0F2235] border border-[#1E3A5F] text-[#94A3B8] hover:text-[#E2E8F0] hover:border-[#0073C1] text-sm transition-all duration-200"
-    >
-      <GoogleIcon />
-      Sign in
-    </button>
+    <div className="flex items-center gap-3">
+      <Link
+        href="/feedback"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors"
+      >
+        <FeedbackIcon />
+        Feedback
+      </Link>
+      <button
+        onClick={() => signIn("google")}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#0F2235] border border-[#1E3A5F] text-[#94A3B8] hover:text-[#E2E8F0] hover:border-[#0073C1] text-sm transition-all duration-200"
+      >
+        <GoogleIcon />
+        Sign in
+      </button>
+    </div>
   );
 }
 

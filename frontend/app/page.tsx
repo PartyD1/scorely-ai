@@ -104,12 +104,6 @@ export default function Home() {
           </Link>
         </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[#1E293B] px-8 py-6 max-w-5xl mx-auto">
-        <p className="text-[#94A3B8] text-xs">
-          © {new Date().getFullYear()} ScorelyAI. Built for DECA competitors.
-        </p>
-      </footer>
     </main>
   );
 }
