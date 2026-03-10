@@ -1,34 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 interface ScorelyLogoProps {
   asHomeButton?: boolean;
   className?: string;
+  height?: number;
 }
 
-export default function ScorelyLogo({ asHomeButton = true, className = "" }: ScorelyLogoProps) {
-  const logo = (
-    <div className={`flex items-center gap-3 ${className}`}>
-      {/* Data Apex icon — three ascending bars */}
-      <svg
-        width="36"
-        height="36"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <line x1="8" y1="5" x2="12" y2="5" stroke="#0073C1" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="5.5" y1="10" x2="14.5" y2="10" stroke="#0073C1" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="3" y1="15" x2="17" y2="15" stroke="#0073C1" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
+export default function ScorelyLogo({ asHomeButton = true, className = "", height = 36 }: ScorelyLogoProps) {
+  // PNG is 1290×256 — maintain aspect ratio
+  const width = Math.round(height * (1290 / 256));
 
-      {/* Wordmark */}
-      <span className="font-semibold uppercase tracking-wider text-4xl leading-none">
-        <span className="text-[#E2E8F0]">SCORELY</span>
-        <span className="text-[#0073C1] font-bold">AI</span>
-      </span>
-    </div>
+  const logo = (
+    <Image
+      src="/scorely-logo.png"
+      alt="ScorelyAI"
+      width={width}
+      height={height}
+      priority
+      className={className}
+    />
   );
 
   if (asHomeButton) {
