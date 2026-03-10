@@ -9,9 +9,10 @@
 <br />
 <div align="center">
 
-<h1 align="center">ScorelyAI</h1>
+  <img src="assets/brand/scorely-logo.png" alt="ScorelyAI" height="60" />
 
   <p align="center">
+    <br />
     Upload your DECA written report. Get judge-level feedback in seconds.
     <br />
     <br />
@@ -163,6 +164,12 @@ Upload PDF  ->  Extract Text + Detect Structure  ->  Resolve Rubric + Outline  -
 
 ```
 scorely-ai/
+├── assets/
+│   └── brand/                        # Logo exports (PNG, TIFF, JPEG) — dark, transparent, light-bg variants
+│
+├── docs/
+│   └── plan.md                       # Issue assessment & action plan
+│
 ├── frontend/
 │   ├── app/
 │   │   ├── page.tsx                  # Landing page
@@ -177,7 +184,11 @@ scorely-ai/
 │   │   ├── HistorySidebar.tsx        # Past submissions for the current event
 │   │   ├── AuthButton.tsx            # Google sign-in / user dropdown
 │   │   ├── AuditProgress.tsx         # Loading state during polling
-│   │   └── ScorelyLogo.tsx           # Branding component
+│   │   └── ScorelyLogo.tsx           # Logo component (renders PNG from public/)
+│   ├── public/                       # Static assets served by Next.js
+│   │   ├── scorely-logo.png          # Primary logo (dark background)
+│   │   ├── scorely-logo-transparent.png
+│   │   └── scorely-icon.png          # Square icon mark
 │   ├── lib/
 │   │   ├── api.ts                    # Centralized API client
 │   │   └── internal-token.ts         # NextAuth JWE → HS256 re-signing for FastAPI
@@ -202,7 +213,8 @@ scorely-ai/
 │   └── scripts/
 │       └── add_rubric.py             # CLI to seed or create rubrics
 │
-└── Procfile                          # Heroku process configuration
+├── Procfile                          # Heroku process configuration
+└── requirements.txt                  # Python backend dependencies
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
