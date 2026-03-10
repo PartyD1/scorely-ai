@@ -15,7 +15,7 @@ export default function ScorelyLogo({ asHomeButton = true, className = "", heigh
 
   const logo = (
     <Image
-      src="/scorely-logo.png"
+      src="/scorely-logo-transparent.png"
       alt="ScorelyAI"
       width={width}
       height={height}
