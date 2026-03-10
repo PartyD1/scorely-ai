@@ -9,7 +9,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
       {/* Top bar */}
       <header className="px-8 py-6 flex items-center justify-between">
-        <ScorelyLogo asHomeButton={false} />
+        <ScorelyLogo />
         <AuthButton />
       </header>
 
