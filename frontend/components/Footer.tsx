@@ -11,6 +11,9 @@ export default function Footer() {
           <Link href="/feedback" className="text-[#64748B] hover:text-[#94A3B8] text-xs transition-colors">
             Feedback
           </Link>
+          <Link href="/donate" className="text-[#64748B] hover:text-[#94A3B8] text-xs transition-colors">
+            Support Us
+          </Link>
         </nav>
       </div>
     </footer>

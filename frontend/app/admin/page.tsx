@@ -116,7 +116,7 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-[#000B14] text-[#E2E8F0]">
-      <header className="px-8 py-6 flex items-center justify-between border-b border-[#1E3A5F]">
+      <header className="px-8 py-6 flex items-center justify-between">
         <ScorelyLogo />
         <div className="flex items-center gap-4">
           <span className="text-[#0073C1] text-xs font-semibold uppercase tracking-widest">Admin</span>
