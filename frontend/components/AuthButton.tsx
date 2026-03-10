@@ -78,6 +78,14 @@ export default function AuthButton() {
               <FeedbackIcon />
               Feedback
             </Link>
+            <Link
+              href="/donate"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
+            >
+              <CoffeeIcon />
+              Support Us
+            </Link>
             <button
               onClick={() => { setOpen(false); signOut(); }}
               className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
@@ -99,6 +107,13 @@ export default function AuthButton() {
       >
         <FeedbackIcon />
         Feedback
+      </Link>
+      <Link
+        href="/donate"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors"
+      >
+        <CoffeeIcon />
+        Support Us
       </Link>
       <button
         onClick={() => signIn("google")}
@@ -135,6 +150,16 @@ function SignOutIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
       <path d="M13 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-4M8 14l4-4-4-4M12 10H3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function CoffeeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+      <path d="M4 7h12l-1.5 8H5.5L4 7z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M16 9h1.5a1.5 1.5 0 0 1 0 3H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M7 3.5C7 3.5 7.5 2 9 2s2 1.5 2 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   );
 }
