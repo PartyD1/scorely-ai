@@ -84,6 +84,7 @@ Grading is async. Upload returns a job ID right away; the frontend polls for res
 - **Token safety:** documents over 25,000 tokens get truncated with a visible warning to the user
 - **Auto file cleanup:** uploaded PDFs are deleted as soon as grading finishes
 - **Feedback:** in-app feedback form for bug reports and feature requests
+- **Support page:** Buy Me a Coffee donation page at `/donate` linked from the nav and footer
 - **Rubric management CLI:** add or update event rubrics without touching any code
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -178,6 +179,7 @@ scorely-ai/
 │   │   ├── results/[jobId]/page.tsx  # Polling + results display
 │   │   ├── account/page.tsx          # User profile, submission history, delete account
 │   │   ├── feedback/page.tsx         # Bug report / feature request form (mailto)
+│   │   ├── donate/page.tsx           # Buy Me a Coffee support page
 │   │   └── api/proxy/                # Next.js proxy routes (auth bridge to FastAPI)
 │   ├── components/
 │   │   ├── UploadForm.tsx            # Two-level event dropdown + file upload
@@ -333,6 +335,8 @@ Private repository, not licensed for external use.
 [![GitHub][github-shield]][github-url]
 
 Project: [https://github.com/PartyD1/scorely-ai](https://github.com/PartyD1/scorely-ai)
+
+Support: [buymeacoffee.com/parthdoshi](https://www.buymeacoffee.com/parthdoshi)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
