@@ -9,9 +9,9 @@ interface ScorelyLogoProps {
   height?: number;
 }
 
-export default function ScorelyLogo({ asHomeButton = true, className = "", height = 36 }: ScorelyLogoProps) {
-  // PNG is 1290×256 — maintain aspect ratio
-  const width = Math.round(height * (1290 / 256));
+export default function ScorelyLogo({ asHomeButton = true, className = "", height = 44 }: ScorelyLogoProps) {
+  // PNG is 2346×303 — maintain aspect ratio
+  const width = Math.round(height * (2346 / 303));
 
   const logo = (
     <Image
