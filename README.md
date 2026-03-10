@@ -171,9 +171,6 @@ scorely-ai/
 ├── assets/
 │   └── brand/                        # Logo exports (PNG, TIFF, JPEG) — dark, transparent, light-bg variants
 │
-├── docs/
-│   └── plan.md                       # Issue assessment & action plan
-│
 ├── frontend/
 │   ├── app/
 │   │   ├── page.tsx                  # Landing page
