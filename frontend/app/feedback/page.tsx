@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import ScorelyLogo from "@/components/ScorelyLogo";
 import AuthButton from "@/components/AuthButton";
@@ -9,33 +8,10 @@ import AuthButton from "@/components/AuthButton";
 type FeedbackType = "Bug Report" | "Feature Request";
 
 export default function FeedbackPage() {
-  const { data: session, status } = useSession();
   const [type, setType] = useState<FeedbackType>("Bug Report");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
-
-  if (status === "loading") {
-    return (
-      <main className="min-h-screen bg-[#000B14] flex items-center justify-center">
-        <div className="h-6 w-24 rounded bg-[#0F2235] animate-pulse" />
-      </main>
-    );
-  }
-
-  if (!session) {
-    return (
-      <main className="min-h-screen bg-[#000B14] flex flex-col items-center justify-center gap-4 text-[#E2E8F0]">
-        <p className="text-[#94A3B8] text-sm">Sign in to submit feedback.</p>
-        <button
-          onClick={() => signIn("google")}
-          className="px-4 py-2 rounded-md bg-[#0073C1] hover:bg-[#005A99] text-white text-sm transition-colors"
-        >
-          Sign in with Google
-        </button>
-      </main>
-    );
-  }
 
   function handleSubmit() {
     if (!subject.trim() || !message.trim()) return;
