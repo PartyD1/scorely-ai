@@ -26,75 +26,76 @@ export default function AuthButton() {
 
   if (session?.user) {
     return (
-      <div className="relative" ref={ref}>
-        <button
-          onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-2 rounded-full focus:outline-none"
-          aria-label="Account menu"
+      <div className="flex items-center gap-3">
+        <Link
+          href="/feedback"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors"
         >
-          {session.user.image ? (
-            <Image
-              src={session.user.image}
-              alt={session.user.name ?? "User"}
-              width={32}
-              height={32}
-              className="rounded-full ring-2 ring-transparent hover:ring-[#0073C1] transition-all"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-[#0073C1] flex items-center justify-center text-white text-xs font-semibold">
-              {session.user.name?.[0]?.toUpperCase() ?? "U"}
+          <FeedbackIcon />
+          Feedback
+        </Link>
+        <Link
+          href="/donate"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md text-[#94A3B8] hover:text-[#E2E8F0] text-sm transition-colors"
+        >
+          <CoffeeIcon />
+          Support Us
+        </Link>
+        <div className="w-px h-4 bg-[#1E3A5F] mx-1" />
+        <div className="relative" ref={ref}>
+          <button
+            onClick={() => setOpen((o) => !o)}
+            className="flex items-center gap-2 rounded-full focus:outline-none"
+            aria-label="Account menu"
+          >
+            {session.user.image ? (
+              <Image
+                src={session.user.image}
+                alt={session.user.name ?? "User"}
+                width={32}
+                height={32}
+                className="rounded-full ring-2 ring-transparent hover:ring-[#0073C1] transition-all"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-[#0073C1] flex items-center justify-center text-white text-xs font-semibold">
+                {session.user.name?.[0]?.toUpperCase() ?? "U"}
+              </div>
+            )}
+            <svg
+              width="10"
+              height="6"
+              viewBox="0 0 10 6"
+              fill="none"
+              className={`text-[#64748B] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            >
+              <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {open && (
+            <div className="absolute right-0 mt-2 w-48 bg-[#060F1A] border border-[#1E3A5F] rounded-xl shadow-xl z-50 overflow-hidden">
+              <div className="px-4 py-3 border-b border-[#1E3A5F]">
+                <p className="text-[#E2E8F0] text-sm font-medium truncate">{session.user.name}</p>
+                <p className="text-[#64748B] text-xs truncate">{session.user.email}</p>
+              </div>
+              <Link
+                href="/account"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
+              >
+                <AccountIcon />
+                My Account
+              </Link>
+              <button
+                onClick={() => { setOpen(false); signOut(); }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
+              >
+                <SignOutIcon />
+                Sign out
+              </button>
             </div>
           )}
-          <svg
-            width="10"
-            height="6"
-            viewBox="0 0 10 6"
-            fill="none"
-            className={`text-[#64748B] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          >
-            <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-
-        {open && (
-          <div className="absolute right-0 mt-2 w-48 bg-[#060F1A] border border-[#1E3A5F] rounded-xl shadow-xl z-50 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#1E3A5F]">
-              <p className="text-[#E2E8F0] text-sm font-medium truncate">{session.user.name}</p>
-              <p className="text-[#64748B] text-xs truncate">{session.user.email}</p>
-            </div>
-            <Link
-              href="/account"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
-            >
-              <AccountIcon />
-              My Account
-            </Link>
-            <Link
-              href="/feedback"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
-            >
-              <FeedbackIcon />
-              Feedback
-            </Link>
-            <Link
-              href="/donate"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
-            >
-              <CoffeeIcon />
-              Support Us
-            </Link>
-            <button
-              onClick={() => { setOpen(false); signOut(); }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#94A3B8] hover:text-[#E2E8F0] hover:bg-[#0A1929] transition-colors"
-            >
-              <SignOutIcon />
-              Sign out
-            </button>
-          </div>
-        )}
+        </div>
       </div>
     );
   }
