@@ -41,6 +41,7 @@ export default function AuthButton() {
           <CoffeeIcon />
           Support Us
         </Link>
+        <div className="w-px h-4 bg-[#1E3A5F] mx-1" />
         <div className="relative" ref={ref}>
           <button
             onClick={() => setOpen((o) => !o)}
