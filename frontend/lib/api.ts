@@ -17,18 +17,26 @@ export async function getEvents(): Promise<ClusterEvents[]> {
   return res.json();
 }
 
-// Upload goes through a Next.js proxy so the server can attach the auth token
-// from the httpOnly NextAuth session cookie.
+// Upload goes directly to the FastAPI backend to avoid Vercel's ~4.5MB body limit.
+// We first fetch a short-lived auth token from the Next.js proxy so the backend
+// can identify the user from the httpOnly NextAuth session cookie.
 export async function uploadPdf(
   file: File,
   eventCode: string
 ): Promise<UploadResponse> {
+  const tokenRes = await fetch("/api/proxy/auth-token");
+  const { authorization } = await tokenRes.json();
+
   const formData = new FormData();
   formData.append("file", file);
   formData.append("event_code", eventCode);
 
-  const res = await fetch("/api/proxy/upload", {
+  const headers: Record<string, string> = {};
+  if (authorization) headers["Authorization"] = authorization;
+
+  const res = await fetch(`${API_URL}/api/upload`, {
     method: "POST",
+    headers,
     body: formData,
   });
 
