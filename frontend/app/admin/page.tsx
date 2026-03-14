@@ -271,9 +271,9 @@ export default function AdminPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <StatCard label="Total Users" value={stats.total_users} />
               <StatCard
-                label="Unique IPs"
+                label="Anon Submitters"
                 value={stats.unique_ips}
-                sub="distinct anonymous visitors"
+                sub="unique IPs that submitted"
               />
               <StatCard label="Total Submissions" value={stats.total_submissions} />
               <StatCard
