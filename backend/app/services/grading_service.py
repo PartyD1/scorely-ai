@@ -284,22 +284,18 @@ def _compute_page_count_penalty(page_count: int, excluded_pages: list[str]) -> d
 def _get_visual_check_pages(page_count: int) -> list[int]:
     """Select page indices to render for the vision check.
 
-    - Last 4 pages: SOA is almost always near the end
-    - First page + 3 evenly spaced middle pages: appearance assessment
-    Capped at 8 total pages.
+    - First 2 pages: SOA appears at the start of the document
+    - 1 middle page + last page: appearance assessment
+    Capped at 5 total pages to minimise image upload size.
     """
     pages = set()
-    pages.add(0)  # cover page for appearance
-    for i in range(max(0, page_count - 4), page_count):  # last 4 for SOA
-        pages.add(i)
+    pages.add(0)  # page 1 — SOA + cover
+    if page_count > 1:
+        pages.add(1)  # page 2 — SOA sometimes on second page
     if page_count > 2:
-        for step in [0.25, 0.5, 0.75]:
-            pages.add(int(page_count * step))
-    sorted_pages = sorted(pages)
-    if len(sorted_pages) > 8:
-        # Keep first 4 (appearance) + last 4 (SOA)
-        sorted_pages = sorted(set(sorted_pages[:4] + sorted_pages[-4:]))
-    return sorted_pages
+        pages.add(int(page_count * 0.5))  # middle for appearance
+    pages.add(page_count - 1)  # last page for appearance
+    return sorted(pages)[:5]
 
 
 # ---------------------------------------------------------------------------
