@@ -246,37 +246,38 @@ def _validate_deca_report(text: str) -> None:
 def _compute_page_count_penalty(page_count: int, excluded_pages: list[str]) -> dict:
     """Compute page count penalty based on pages actually detected in the document.
 
-    Only pages that are confirmed present (title page, TOC, SOA) are excluded.
-    Students get 20 content pages; excluded pages don't count toward that limit.
+    The title page is always excluded. TOC and SOA are excluded if detected.
+    Students get 20 content pages; the maximum total is 23 when all 3 exempt pages
+    (title page, TOC, SOA) are present.
     """
     excluded_count = len(excluded_pages)
     content_pages = page_count - excluded_count
+    max_total = 20 + excluded_count  # e.g. 23 if title + TOC + SOA all present
 
-    if excluded_pages:
-        excluded_str = ", ".join(excluded_pages)
-        excluded_note = f"Excluded ({excluded_count} page{'s' if excluded_count != 1 else ''}): {excluded_str}."
-    else:
-        excluded_note = "No standard excluded pages (title page, TOC, SOA) were detected."
+    excluded_str = ", ".join(excluded_pages)
+    excluded_note = f"Exempt pages ({excluded_count}): {excluded_str}."
 
     if content_pages > 20:
         over = content_pages - 20
         return {
-            "description": "Page count within 20 pages (5-pt penalty per extra page)",
+            "description": f"Page count within {max_total} pages (5-pt penalty per extra page)",
             "penalty_points": 5 * over,
             "status": "flagged",
             "note": (
                 f"Total pages: {page_count}. {excluded_note} "
-                f"Content pages: {content_pages}, which is {over} page(s) over the 20-page limit."
+                f"Content pages: {content_pages}, which is {over} page(s) over the 20-page limit "
+                f"(max {max_total} total including exempt pages)."
             ),
         }
 
     return {
-        "description": "Page count within 20 pages (5-pt penalty per extra page)",
+        "description": f"Page count within {max_total} pages (5-pt penalty per extra page)",
         "penalty_points": 0,
         "status": "clear",
         "note": (
             f"Total pages: {page_count}. {excluded_note} "
-            f"Content pages: {content_pages}, within the 20-page limit."
+            f"Content pages: {content_pages}, within the 20-page limit "
+            f"(max {max_total} total including exempt pages)."
         ),
     }
 
@@ -423,9 +424,8 @@ def grade_report(db: Session, job_id: str) -> None:
             )
 
         # Build excluded pages list from what was actually detected in this document
-        excluded_pages: list[str] = []
-        if doc_structure.get("has_title_page"):
-            excluded_pages.append("title page")
+        # Title page is always excluded — it never counts toward the page limit
+        excluded_pages: list[str] = ["title page"]
         if doc_structure.get("has_toc"):
             excluded_pages.append("table of contents")
         # For SOA: prefer vision result if available, fall back to text detection
