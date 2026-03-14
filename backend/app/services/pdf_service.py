@@ -158,7 +158,7 @@ def render_pages_as_images(file_path: str, page_indices: list[int]) -> list[byte
     images = []
     for i in page_indices:
         if 0 <= i < len(doc):
-            pixmap = doc[i].get_pixmap(dpi=150)
+            pixmap = doc[i].get_pixmap(dpi=72)
             images.append(pixmap.tobytes("png"))
     doc.close()
     return images
