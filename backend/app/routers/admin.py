@@ -100,53 +100,55 @@ def get_analytics(
     # Build a complete date list for the last 30 days
     dates = [(start + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(30)]
 
+    from sqlalchemy import cast, Date
+
     # Signups per day
     signup_rows = (
         db.query(
-            func.strftime("%Y-%m-%d", User.created_at).label("day"),
+            cast(User.created_at, Date).label("day"),
             func.count(User.id).label("cnt"),
         )
         .filter(User.created_at >= start)
-        .group_by("day")
+        .group_by(cast(User.created_at, Date))
         .all()
     )
-    signup_map = {row.day: row.cnt for row in signup_rows}
+    signup_map = {row.day.strftime("%Y-%m-%d"): row.cnt for row in signup_rows}
 
     # Submissions per day (all)
     sub_rows = (
         db.query(
-            func.strftime("%Y-%m-%d", Job.created_at).label("day"),
+            cast(Job.created_at, Date).label("day"),
             func.count(Job.id).label("cnt"),
         )
         .filter(Job.created_at >= start)
-        .group_by("day")
+        .group_by(cast(Job.created_at, Date))
         .all()
     )
-    sub_map = {row.day: row.cnt for row in sub_rows}
+    sub_map = {row.day.strftime("%Y-%m-%d"): row.cnt for row in sub_rows}
 
     # Anonymous submissions per day (user_id IS NULL)
     anon_rows = (
         db.query(
-            func.strftime("%Y-%m-%d", Job.created_at).label("day"),
+            cast(Job.created_at, Date).label("day"),
             func.count(Job.id).label("cnt"),
         )
         .filter(Job.created_at >= start, Job.user_id.is_(None))
-        .group_by("day")
+        .group_by(cast(Job.created_at, Date))
         .all()
     )
-    anon_map = {row.day: row.cnt for row in anon_rows}
+    anon_map = {row.day.strftime("%Y-%m-%d"): row.cnt for row in anon_rows}
 
     # Auth submissions per day
     auth_rows = (
         db.query(
-            func.strftime("%Y-%m-%d", Job.created_at).label("day"),
+            cast(Job.created_at, Date).label("day"),
             func.count(Job.id).label("cnt"),
         )
         .filter(Job.created_at >= start, Job.user_id.isnot(None))
-        .group_by("day")
+        .group_by(cast(Job.created_at, Date))
         .all()
     )
-    auth_map = {row.day: row.cnt for row in auth_rows}
+    auth_map = {row.day.strftime("%Y-%m-%d"): row.cnt for row in auth_rows}
 
     def build_series(mapping: dict) -> List[DailyDataPoint]:
         return [DailyDataPoint(date=d, value=mapping.get(d, 0)) for d in dates]
