@@ -99,4 +99,21 @@ class AdminStats(BaseModel):
     total_users: int
     total_submissions: int
     submissions_today: int
+    submissions_this_week: int
+    unique_ips: int
+    anonymous_submissions: int
+    authenticated_submissions: int
+    completion_rate: float  # 0-100
     top_events: List[dict]  # [{"event_code": str, "count": int}]
+
+
+class DailyDataPoint(BaseModel):
+    date: str  # "YYYY-MM-DD"
+    value: int
+
+
+class AdminAnalytics(BaseModel):
+    signups_30d: List[DailyDataPoint]
+    submissions_30d: List[DailyDataPoint]
+    anon_submissions_30d: List[DailyDataPoint]
+    auth_submissions_30d: List[DailyDataPoint]

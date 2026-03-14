@@ -74,6 +74,12 @@ export async function getAdminUsers() {
   return res.json();
 }
 
+export async function getAdminAnalytics() {
+  const res = await fetch("/api/proxy/admin/analytics");
+  if (!res.ok) throw new Error("Failed to fetch admin analytics");
+  return res.json();
+}
+
 export async function getAdminUserSubmissions(userId: string) {
   const res = await fetch(`/api/proxy/admin/users/${userId}/submissions`);
   if (!res.ok) throw new Error("Failed to fetch user submissions");
