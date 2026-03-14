@@ -259,8 +259,7 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-6 py-10 space-y-12">
 
         {/* ── KPI Cards ── */}
-        <section>
-          <SectionHeader>Overview</SectionHeader>
+        <section className="space-y-6">
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, i) => (
@@ -268,40 +267,55 @@ export default function AdminPage() {
               ))}
             </div>
           ) : stats && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <StatCard label="Total Users" value={stats.total_users} />
-              <StatCard
-                label="Anon Submitters"
-                value={stats.unique_ips}
-                sub="unique IPs that submitted"
-              />
-              <StatCard label="Total Submissions" value={stats.total_submissions} />
-              <StatCard
-                label="Completion Rate"
-                value={`${stats.completion_rate}%`}
-                accent={
-                  stats.completion_rate >= 80
-                    ? "text-[#22C55E]"
-                    : stats.completion_rate >= 60
-                    ? "text-[#EAB308]"
-                    : "text-[#EF4444]"
-                }
-              />
-              <StatCard label="Submissions Today" value={stats.submissions_today} />
-              <StatCard label="This Week" value={stats.submissions_this_week} />
-              <StatCard
-                label="Authenticated"
-                value={stats.authenticated_submissions}
-                sub="signed-in users"
-                accent="text-[#0073C1]"
-              />
-              <StatCard
-                label="Anonymous"
-                value={stats.anonymous_submissions}
-                sub="no account"
-                accent="text-[#94A3B8]"
-              />
-            </div>
+            <>
+              {/* Users */}
+              <div>
+                <SectionHeader>Users</SectionHeader>
+                <div className="grid grid-cols-2 gap-4">
+                  <StatCard
+                    label="Registered Users"
+                    value={stats.total_users}
+                    sub="signed up with Google"
+                  />
+                  <StatCard
+                    label="Anon Submitters"
+                    value={stats.unique_ips}
+                    sub="unique IPs, no account"
+                  />
+                </div>
+              </div>
+
+              {/* Submissions */}
+              <div>
+                <SectionHeader>Submissions</SectionHeader>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <StatCard label="Total" value={stats.total_submissions} />
+                  <StatCard label="Today" value={stats.submissions_today} />
+                  <StatCard label="This Week" value={stats.submissions_this_week} />
+                  <StatCard
+                    label="Completion Rate"
+                    value={`${stats.completion_rate}%`}
+                    accent={
+                      stats.completion_rate >= 80
+                        ? "text-[#22C55E]"
+                        : stats.completion_rate >= 60
+                        ? "text-[#EAB308]"
+                        : "text-[#EF4444]"
+                    }
+                  />
+                  <StatCard
+                    label="By Signed-In"
+                    value={stats.authenticated_submissions}
+                    accent="text-[#0073C1]"
+                  />
+                  <StatCard
+                    label="By Anonymous"
+                    value={stats.anonymous_submissions}
+                    accent="text-[#94A3B8]"
+                  />
+                </div>
+              </div>
+            </>
           )}
         </section>
 
